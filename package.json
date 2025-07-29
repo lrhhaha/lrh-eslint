@@ -1,0 +1,15 @@
+{
+  "name": "min-eslint",
+  "version": "1.0.0",
+  "description": "min-eslint",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./esbuild-config.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "esbuild": "^0.25.8"
+  }
+}
