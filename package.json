@@ -4,6 +4,7 @@
   "description": "min-eslint",
   "main": "index.js",
   "scripts": {
+    "dev": "node ./esbuild-dev-config.mjs",
     "build": "node ./esbuild-config.mjs"
   },
   "author": "",
