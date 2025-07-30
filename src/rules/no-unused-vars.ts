@@ -27,18 +27,18 @@ export default {
 
     return {
       // 返回报告
-      output: function (): {
-        start: number;
-        message: string;
-      }[] {
-        const report = []
+      report: function (){
+        const report: {
+          start: number;
+          message: string;
+        }[] = [];
         declared.forEach(({ node }, varName) => {
           report.push({
-            start: node.start,
-            message: `unused var: ${varName}`
-          })
-        })
-        return report
+            start: (node as any).start,
+            message: `unused var: ${varName}`,
+          });
+        });
+        return report;
       },
       VariableDeclarator: function (
         node: ESTreeNode,

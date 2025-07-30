@@ -37,8 +37,15 @@ function traverseAST(ast: ESTreeNode) {
     },
     leave: function (node) {
       if (node.type === "Program") {
-        const leaveFns = listenersMap.get("output" as NodeType);
-        leaveFns?.forEach((fn) => fn());
+        const leaveFns = listenersMap.get("report" as NodeType);
+        leaveFns?.forEach((fn) => {
+          const report = fn()
+
+          report.forEach(({ start, message}: any) => {
+            console.log(`Position: ${start} - ${message}`)
+          })
+
+        });
       }
     },
   });
