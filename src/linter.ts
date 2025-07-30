@@ -6,60 +6,46 @@ import type {
   VariableDeclarator,
   VariableDeclaration,
 } from "estree";
-import noUnusedVarsRule from "./rules/no-unused-vars";
+import listenersMap from "./rules";
+import fs from "node:fs";
+import type { NodeMap } from "estree";
+type NodeType = keyof NodeMap;
 
-const code1 = `
-  let a = 1;
-  let b = 2
-  console.log(a)
-`;
-
-const code2 = `
-  let a = 'b';
-  let obj = {
-    b: 2
-  }
-  console.log(obj.b)
-`;
-
-const code3 = `
-  let a = 'b';
-  let obj = {
-    b: 2
-  }
-  console.log(obj[a])
-`;
-
-const code4 = `
-  let a = 'b';
-  let obj = {
-    b: 2
-  }
-  if (1) {
-    console.log(obj[a])
-  }
-`;
-
-
-
-const ast = espree.parse(code4, { ecmaVersion: 2022 });
-// console.dir(ast, { depth: null });
-
-
-const noUnusedVarsListeners = noUnusedVarsRule.create(null)
-
-estraverse.traverse(ast as ESTreeNode, {
-  enter: function (node, parent) {
-    worker(node, parent, noUnusedVarsListeners)
-  }
-})
-
-function worker(node: ESTreeNode, parent: ESTreeNode | null, listeners: any) {
-  const arr = Object.keys(listeners)
-  if (arr.includes(node.type)) {
-    const fn = listeners[node.type];
-    fn(node, parent)
+function getCode(path: string) {
+  // 读取文本文件
+  try {
+    const data = fs.readFileSync(path, "utf8");
+    return data;
+  } catch (err) {
+    console.error("读取文件失败:", err);
   }
 }
 
-noUnusedVarsListeners.output()
+function getAST(code: string) {
+  const ast = espree.parse(code, { ecmaVersion: 2022 });
+  // console.dir(ast, { depth: null });
+  return ast;
+}
+
+function traverseAST(ast: ESTreeNode) {
+  estraverse.traverse(ast as ESTreeNode, {
+    enter: function (node, parent) {
+      if (listenersMap.has(node.type as NodeType)) {
+        const funs = listenersMap.get(node.type as NodeType);
+        funs?.forEach((fn) => fn(node, parent));
+      }
+    },
+    leave: function (node) {
+      if (node.type === "Program") {
+        const leaveFns = listenersMap.get("output" as NodeType);
+        leaveFns?.forEach((fn) => fn());
+      }
+    },
+  });
+}
+
+export function run(path: string) {
+  const text = getCode(path)!;
+  const ast = getAST(text);
+  traverseAST(ast as ESTreeNode);
+}

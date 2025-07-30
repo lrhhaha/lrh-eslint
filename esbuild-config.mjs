@@ -4,6 +4,6 @@ await esbuild.build({
   platform: 'node',
   entryPoints: ['src/cli.ts'],
   bundle: true,
-  outfile: 'dist/out.js',
+  outfile: 'bin/mini-eslint.js',
   packages: 'external',
 })

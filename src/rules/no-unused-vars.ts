@@ -14,12 +14,31 @@ export default {
     // 已声明变量列表
     const declared: Map<
       string,
-      { kind: "let" | "var" | "const" | "using" | "await using" }
+      {
+        kind: "let" | "var" | "const" | "using" | "await using";
+        node: ESTreeNode;
+      }
     > = new Map();
 
+    const report: {
+      start: number;
+      message: string;
+    }[] = [];
+
     return {
-      output: function () {
-        console.log(declared);
+      // 返回报告
+      output: function (): {
+        start: number;
+        message: string;
+      }[] {
+        const report = []
+        declared.forEach(({ node }, varName) => {
+          report.push({
+            start: node.start,
+            message: `unused var: ${varName}`
+          })
+        })
+        return report
       },
       VariableDeclarator: function (
         node: ESTreeNode,
@@ -30,7 +49,7 @@ export default {
           const name = (node.id as Identifier).name;
           // VariableDeclaration - 变量声明语句最外层，可获取声明方式（let、var、const）
           const kind = (parent as VariableDeclaration)!.kind;
-          declared.set(name, { kind });
+          declared.set(name, { kind, node });
         }
       },
       Identifier: function (node: ESTreeNode, parent: ESTreeNode | null) {

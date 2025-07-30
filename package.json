@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "min-eslint",
   "main": "index.js",
+  "bin": {
+    "mini-eslint": "./bin/mini-eslint.js"
+  },
   "scripts": {
     "dev": "node ./esbuild-dev-config.mjs",
     "build": "node ./esbuild-config.mjs"
@@ -17,6 +20,7 @@
   },
   "dependencies": {
     "chalk": "^5.4.1",
+    "commander": "^14.0.0",
     "espree": "^10.4.0",
     "estraverse": "^5.3.0"
   }

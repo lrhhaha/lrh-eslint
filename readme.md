@@ -33,7 +33,25 @@ ESTree 定义了各种节点类型，比如：
 ## commander
 
 命令行解决方案
+
 [官方文档](https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md)
+
+将工具注册为全局命令
+```package.json
+"bin": {
+  "min-eslint": "./src/cli.js"
+},
+```
+
+安装为全局命令
+```bash
+npm link
+```
+
+撤销安装
+```bash
+npm unlink -g min-eslint
+```
 
 ## chalk
 命令行样式
