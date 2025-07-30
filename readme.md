@@ -30,6 +30,15 @@ ESTree 定义了各种节点类型，比如：
 
 [官方文档](https://www.npmjs.com/package/estraverse)
 
+## commander
+
+命令行解决方案
+[官方文档](https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md)
+
+## chalk
+命令行样式
+[官方文档](https://github.com/chalk/chalk#readme)
+
 
 # 参考
 https://github.com/OBKoro1/web_accumulate/issues/258
