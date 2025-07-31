@@ -26,10 +26,12 @@ export default {
       report: function () {
         const reports: Report[] = [];
         declared.forEach(({ node }, varName) => {
+          const { start } = node.loc as any
+          const { line, column } = start
           reports.push({
             // start: (node as any).start,
             node,
-            message: `unused var: ${varName}`,
+            message: `Position: line:${line} - column:${column} - unused var: ${varName}`,
           });
         });
         return reports;

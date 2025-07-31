@@ -1,4 +1,5 @@
 import no_unused_vars from "./no_unused_vars";
+import semi from "./semi";
 import type { Rules, NodeType } from "../types";
 import fs from "node:fs";
 import nodePath from "node:path";
@@ -6,6 +7,7 @@ import nodePath from "node:path";
 // 所有规则
 const ruleCreators: { [k: string]: any } = {
   no_unused_vars,
+  semi
 };
 
 const listenersMap: Map<NodeType, [Function]> = new Map();

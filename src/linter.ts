@@ -61,7 +61,8 @@ function traverseAST(ast: ESTreeNode) {
             // console.log(node)
             const { start } = node.loc
             const { line, column } = start
-            console.log(chalk.red(`Position: line:${line} - column:${column} - ${message}`));
+            // console.log(chalk.red(`Position: line:${line} - column:${column} - ${message}`));
+            console.log(chalk.red(`${message}`));
           });
         });
       }

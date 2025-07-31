@@ -16843,10 +16843,12 @@ var no_unused_vars_default = {
       report: function() {
         const reports = [];
         declared.forEach(({ node }, varName) => {
+          const { start } = node.loc;
+          const { line, column } = start;
           reports.push({
             // start: (node as any).start,
             node,
-            message: `unused var: ${varName}`
+            message: `Position: line:${line} - column:${column} - unused var: ${varName}`
           });
         });
         return reports;
@@ -16895,11 +16897,46 @@ var no_unused_vars_default = {
   }
 };
 
+// src/rules/semi.ts
+var semi_default = {
+  meta: {
+    docs: "semi"
+  },
+  create(ctx) {
+    const reports = [];
+    return {
+      // 返回报告
+      report: function() {
+        return reports;
+      },
+      Program: function(node, parent) {
+        const { tokens, body } = node;
+        body.forEach((node2) => {
+          const { end } = node2;
+          const token = tokens.find((it) => it.end === end);
+          if (token) {
+            const { type, value } = token;
+            if (type !== "Punctuator" || value !== ";") {
+              reports.push({
+                node: node2,
+                message: `Position: line:${token.loc.start.line} - column:${token.loc.end.column} - semi`
+              });
+            }
+          } else {
+            console.error("can not find target token");
+          }
+        });
+      }
+    };
+  }
+};
+
 // src/rules/index.ts
 var import_node_fs = __toESM(require("node:fs"));
 var import_node_path = __toESM(require("node:path"));
 var ruleCreators = {
-  no_unused_vars: no_unused_vars_default
+  no_unused_vars: no_unused_vars_default,
+  semi: semi_default
 };
 var listenersMap = /* @__PURE__ */ new Map();
 initRules();
@@ -17501,7 +17538,7 @@ function traverseAST(ast) {
           report.forEach(({ node: node2, message }) => {
             const { start } = node2.loc;
             const { line, column } = start;
-            console.log(source_default.red(`Position: line:${line} - column:${column} - ${message}`));
+            console.log(source_default.red(`${message}`));
           });
         });
       }
