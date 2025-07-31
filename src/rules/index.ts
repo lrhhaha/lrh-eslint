@@ -1,9 +1,7 @@
-import type { NodeMap } from "estree";
 import no_unused_vars from "./no_unused_vars";
-import type { Rules } from "../types";
+import type { Rules, NodeType } from "../types";
 import fs from "node:fs";
 import nodePath from "node:path";
-type NodeType = keyof NodeMap;
 
 // 所有规则
 const ruleCreators: { [k: string]: any } = {

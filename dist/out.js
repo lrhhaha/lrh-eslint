@@ -16838,18 +16838,17 @@ var no_unused_vars_default = {
   },
   create(ctx) {
     const declared = /* @__PURE__ */ new Map();
-    const report = [];
     return {
       // 返回报告
       report: function() {
-        const report2 = [];
+        const reports = [];
         declared.forEach(({ node }, varName) => {
-          report2.push({
+          reports.push({
             start: node.start,
             message: `unused var: ${varName}`
           });
         });
-        return report2;
+        return reports;
       },
       VariableDeclarator: function(node, parent) {
         if (node.type === "VariableDeclarator") {

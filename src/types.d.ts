@@ -1,3 +1,5 @@
+import type { NodeMap } from "estree";
+
 export type Rules = {
   [key: string]: {
     state: "on" | "off";
@@ -8,3 +10,10 @@ export type Rules = {
 export type Config = {
   rules: Rule;
 };
+
+export type Report = {
+  start: number;
+  message: string;
+}
+
+export type NodeType = keyof NodeMap;

@@ -4,6 +4,7 @@ import type {
   VariableDeclarator,
   VariableDeclaration,
 } from "estree";
+import type { Report } from "../types";
 
 export default {
   meta: {
@@ -20,25 +21,17 @@ export default {
       }
     > = new Map();
 
-    const report: {
-      start: number;
-      message: string;
-    }[] = [];
-
     return {
       // 返回报告
       report: function () {
-        const report: {
-          start: number;
-          message: string;
-        }[] = [];
+        const reports: Report[] = [];
         declared.forEach(({ node }, varName) => {
-          report.push({
+          reports.push({
             start: (node as any).start,
             message: `unused var: ${varName}`,
           });
         });
-        return report;
+        return reports;
       },
       VariableDeclarator: function (
         node: ESTreeNode,

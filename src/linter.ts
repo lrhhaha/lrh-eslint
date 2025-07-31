@@ -3,8 +3,7 @@ import estraverse from "estraverse";
 import type { Node as ESTreeNode } from "estree";
 import listenersMap from "./rules";
 import fs from "node:fs";
-import type { NodeMap } from "estree";
-type NodeType = keyof NodeMap;
+import type { NodeType } from "./types";
 
 export function run(path: string) {
   const text = getCode(path)!;
