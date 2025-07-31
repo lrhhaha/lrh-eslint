@@ -3,9 +3,24 @@ import estraverse from "estraverse";
 import type { Node as ESTreeNode } from "estree";
 import listenersMap from "./rules";
 import fs from "node:fs";
+import nodePath from "node:path";
+import chalk from "chalk";
 import type { NodeType } from "./types";
 
-export function run(path: string) {
+let errorFlag = false;
+
+export function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
+  if (path) {
+    worker(path);
+  } else if(isGlobal) {
+    const files = getAllJsFile(process.cwd());
+    files.forEach((filePath) => worker(filePath));
+  }
+
+  process.exit(errorFlag ? 1 : 0);
+}
+
+function worker(path: string) {
   const text = getCode(path)!;
   const ast = getAST(text);
   traverseAST(ast as ESTreeNode);
@@ -39,13 +54,40 @@ function traverseAST(ast: ESTreeNode) {
       if (node.type === "Program") {
         const leaveFns = listenersMap.get("report" as NodeType);
         leaveFns?.forEach((fn) => {
+          errorFlag = true;
           const report = fn();
 
           report.forEach(({ start, message }: any) => {
-            console.log(`Position: ${start} - ${message}`);
+            console.log(chalk.red(`Position: ${start} - ${message}`));
           });
         });
       }
     },
   });
+}
+
+function getAllJsFile(dirPath: string) {
+  try {
+    const files = fs.readdirSync(dirPath);
+    const allFiles: string[] = [];
+
+    files.forEach((file) => {
+      const filePath = nodePath.join(dirPath, file);
+      const stat = fs.statSync(filePath);
+
+      if (stat.isFile()) {
+        // console.log(filePath, '???');
+        if (filePath.endsWith(".js")) allFiles.push(filePath);
+      } else if (stat.isDirectory()) {
+        // 递归读取子目录
+        const subFiles = getAllJsFile(filePath);
+        allFiles.push(...subFiles);
+      }
+    });
+
+    return allFiles;
+  } catch (error) {
+    console.error("读取目录时出错:", error);
+    return [];
+  }
 }

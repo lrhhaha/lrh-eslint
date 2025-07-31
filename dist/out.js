@@ -394,10 +394,10 @@ var require_acorn = __commonJS({
       }
       var beforeExpr2 = { beforeExpr: true }, startsExpr2 = { startsExpr: true };
       var keywords2 = {};
-      function kw2(name, options) {
-        if (options === void 0) options = {};
-        options.keyword = name;
-        return keywords2[name] = new TokenType3(name, options);
+      function kw2(name, options2) {
+        if (options2 === void 0) options2 = {};
+        options2.keyword = name;
+        return keywords2[name] = new TokenType3(name, options2);
       }
       var types$12 = {
         num: new TokenType3("num", startsExpr2),
@@ -654,39 +654,39 @@ var require_acorn = __commonJS({
       };
       var warnedAboutEcmaVersion2 = false;
       function getOptions2(opts) {
-        var options = {};
+        var options2 = {};
         for (var opt in defaultOptions2) {
-          options[opt] = opts && hasOwn2(opts, opt) ? opts[opt] : defaultOptions2[opt];
+          options2[opt] = opts && hasOwn2(opts, opt) ? opts[opt] : defaultOptions2[opt];
         }
-        if (options.ecmaVersion === "latest") {
-          options.ecmaVersion = 1e8;
-        } else if (options.ecmaVersion == null) {
+        if (options2.ecmaVersion === "latest") {
+          options2.ecmaVersion = 1e8;
+        } else if (options2.ecmaVersion == null) {
           if (!warnedAboutEcmaVersion2 && typeof console === "object" && console.warn) {
             warnedAboutEcmaVersion2 = true;
             console.warn("Since Acorn 8.0.0, options.ecmaVersion is required.\nDefaulting to 2020, but this will stop working in the future.");
           }
-          options.ecmaVersion = 11;
-        } else if (options.ecmaVersion >= 2015) {
-          options.ecmaVersion -= 2009;
+          options2.ecmaVersion = 11;
+        } else if (options2.ecmaVersion >= 2015) {
+          options2.ecmaVersion -= 2009;
         }
-        if (options.allowReserved == null) {
-          options.allowReserved = options.ecmaVersion < 5;
+        if (options2.allowReserved == null) {
+          options2.allowReserved = options2.ecmaVersion < 5;
         }
         if (!opts || opts.allowHashBang == null) {
-          options.allowHashBang = options.ecmaVersion >= 14;
+          options2.allowHashBang = options2.ecmaVersion >= 14;
         }
-        if (isArray2(options.onToken)) {
-          var tokens = options.onToken;
-          options.onToken = function(token) {
+        if (isArray2(options2.onToken)) {
+          var tokens = options2.onToken;
+          options2.onToken = function(token) {
             return tokens.push(token);
           };
         }
-        if (isArray2(options.onComment)) {
-          options.onComment = pushComment2(options, options.onComment);
+        if (isArray2(options2.onComment)) {
+          options2.onComment = pushComment2(options2, options2.onComment);
         }
-        return options;
+        return options2;
       }
-      function pushComment2(options, array) {
+      function pushComment2(options2, array) {
         return function(block, text, start, end, startLoc, endLoc) {
           var comment = {
             type: block ? "Block" : "Line",
@@ -694,10 +694,10 @@ var require_acorn = __commonJS({
             start,
             end
           };
-          if (options.locations) {
+          if (options2.locations) {
             comment.loc = new SourceLocation3(this, startLoc, endLoc);
           }
-          if (options.ranges) {
+          if (options2.ranges) {
             comment.range = [start, end];
           }
           array.push(comment);
@@ -708,14 +708,14 @@ var require_acorn = __commonJS({
         return SCOPE_FUNCTION2 | (async ? SCOPE_ASYNC2 : 0) | (generator ? SCOPE_GENERATOR2 : 0);
       }
       var BIND_NONE2 = 0, BIND_VAR2 = 1, BIND_LEXICAL2 = 2, BIND_FUNCTION2 = 3, BIND_SIMPLE_CATCH2 = 4, BIND_OUTSIDE2 = 5;
-      var Parser3 = function Parser4(options, input, startPos) {
-        this.options = options = getOptions2(options);
-        this.sourceFile = options.sourceFile;
-        this.keywords = wordsRegexp2(keywords$12[options.ecmaVersion >= 6 ? 6 : options.sourceType === "module" ? "5module" : 5]);
+      var Parser3 = function Parser4(options2, input, startPos) {
+        this.options = options2 = getOptions2(options2);
+        this.sourceFile = options2.sourceFile;
+        this.keywords = wordsRegexp2(keywords$12[options2.ecmaVersion >= 6 ? 6 : options2.sourceType === "module" ? "5module" : 5]);
         var reserved = "";
-        if (options.allowReserved !== true) {
-          reserved = reservedWords2[options.ecmaVersion >= 6 ? 6 : options.ecmaVersion === 5 ? 5 : 3];
-          if (options.sourceType === "module") {
+        if (options2.allowReserved !== true) {
+          reserved = reservedWords2[options2.ecmaVersion >= 6 ? 6 : options2.ecmaVersion === 5 ? 5 : 3];
+          if (options2.sourceType === "module") {
             reserved += " await";
           }
         }
@@ -741,14 +741,14 @@ var require_acorn = __commonJS({
         this.lastTokStart = this.lastTokEnd = this.pos;
         this.context = this.initialContext();
         this.exprAllowed = true;
-        this.inModule = options.sourceType === "module";
+        this.inModule = options2.sourceType === "module";
         this.strict = this.inModule || this.strictDirective(this.pos);
         this.potentialArrowAt = -1;
         this.potentialArrowInForAwait = false;
         this.yieldPos = this.awaitPos = this.awaitIdentPos = 0;
         this.labels = [];
         this.undefinedExports = /* @__PURE__ */ Object.create(null);
-        if (this.pos === 0 && options.allowHashBang && this.input.slice(0, 2) === "#!") {
+        if (this.pos === 0 && options2.allowHashBang && this.input.slice(0, 2) === "#!") {
           this.skipLineComment(2);
         }
         this.scopeStack = [];
@@ -817,16 +817,16 @@ var require_acorn = __commonJS({
         }
         return cls;
       };
-      Parser3.parse = function parse5(input, options) {
-        return new this(options, input).parse();
+      Parser3.parse = function parse5(input, options2) {
+        return new this(options2, input).parse();
       };
-      Parser3.parseExpressionAt = function parseExpressionAt3(input, pos, options) {
-        var parser = new this(options, input, pos);
+      Parser3.parseExpressionAt = function parseExpressionAt3(input, pos, options2) {
+        var parser = new this(options2, input, pos);
         parser.nextToken();
         return parser.parseExpression();
       };
-      Parser3.tokenizer = function tokenizer3(input, options) {
-        return new this(options, input);
+      Parser3.tokenizer = function tokenizer3(input, options2) {
+        return new this(options2, input);
       };
       Object.defineProperties(Parser3.prototype, prototypeAccessors2);
       var pp$92 = Parser3.prototype;
@@ -5879,14 +5879,14 @@ var require_acorn = __commonJS({
         lineBreakG: lineBreakG2,
         nonASCIIwhitespace: nonASCIIwhitespace2
       };
-      function parse4(input, options) {
-        return Parser3.parse(input, options);
+      function parse4(input, options2) {
+        return Parser3.parse(input, options2);
       }
-      function parseExpressionAt2(input, pos, options) {
-        return Parser3.parseExpressionAt(input, pos, options);
+      function parseExpressionAt2(input, pos, options2) {
+        return Parser3.parseExpressionAt(input, pos, options2);
       }
-      function tokenizer2(input, options) {
-        return Parser3.tokenizer(input, options);
+      function tokenizer2(input, options2) {
+        return Parser3.tokenizer(input, options2);
       }
       exports3.Node = Node3;
       exports3.Parser = Parser3;
@@ -5972,12 +5972,12 @@ var require_acorn_jsx = __commonJS({
       if (object.type === "JSXMemberExpression")
         return getQualifiedJSXName(object.object) + "." + getQualifiedJSXName(object.property);
     }
-    module2.exports = function(options) {
-      options = options || {};
+    module2.exports = function(options2) {
+      options2 = options2 || {};
       return function(Parser3) {
         return plugin({
-          allowNamespaces: options.allowNamespaces !== false,
-          allowNamespacedObjects: !!options.allowNamespacedObjects
+          allowNamespaces: options2.allowNamespaces !== false,
+          allowNamespacedObjects: !!options2.allowNamespacedObjects
         }, Parser3);
       };
     };
@@ -5988,7 +5988,7 @@ var require_acorn_jsx = __commonJS({
       configurable: true,
       enumerable: true
     });
-    function plugin(options, Parser3) {
+    function plugin(options2, Parser3) {
       const acorn = Parser3.acorn || require_acorn();
       const acornJsx = getJsxTokens(acorn);
       const tt = acorn.tokTypes;
@@ -6147,7 +6147,7 @@ var require_acorn_jsx = __commonJS({
         jsx_parseNamespacedName() {
           let startPos = this.start, startLoc = this.startLoc;
           let name = this.jsx_parseIdentifier();
-          if (!options.allowNamespaces || !this.eat(tt.colon)) return name;
+          if (!options2.allowNamespaces || !this.eat(tt.colon)) return name;
           var node = this.startNodeAt(startPos, startLoc);
           node.namespace = name;
           node.name = this.jsx_parseIdentifier();
@@ -6159,7 +6159,7 @@ var require_acorn_jsx = __commonJS({
           if (this.type === tok.jsxTagEnd) return "";
           let startPos = this.start, startLoc = this.startLoc;
           let node = this.jsx_parseNamespacedName();
-          if (this.type === tt.dot && node.type === "JSXNamespacedName" && !options.allowNamespacedObjects) {
+          if (this.type === tt.dot && node.type === "JSXNamespacedName" && !options2.allowNamespacedObjects) {
             this.unexpected();
           }
           while (this.eat(tt.dot)) {
@@ -7506,8 +7506,8 @@ var require_help = __commonJS({
           helper.visibleOptions(cmd),
           (option) => option.helpGroupHeading ?? "Options:"
         );
-        optionGroups.forEach((options, group) => {
-          const optionList = options.map((option) => {
+        optionGroups.forEach((options2, group) => {
+          const optionList = options2.map((option) => {
             return callFormatItem(
               helper.styleOptionTerm(helper.optionTerm(option)),
               helper.styleOptionDescription(helper.optionDescription(option))
@@ -7948,11 +7948,11 @@ var require_option = __commonJS({
       /**
        * @param {Option[]} options
        */
-      constructor(options) {
+      constructor(options2) {
         this.positiveOptions = /* @__PURE__ */ new Map();
         this.negativeOptions = /* @__PURE__ */ new Map();
         this.dualOptions = /* @__PURE__ */ new Set();
-        options.forEach((option) => {
+        options2.forEach((option) => {
           if (option.negate) {
             this.negativeOptions.set(option.attributeName(), option);
           } else {
@@ -8116,7 +8116,7 @@ var require_command = __commonJS({
     var childProcess = require("node:child_process");
     var path2 = require("node:path");
     var fs3 = require("node:fs");
-    var process2 = require("node:process");
+    var process3 = require("node:process");
     var { Argument, humanReadableArgName } = require_argument();
     var { CommanderError } = require_error();
     var { Help, stripColor } = require_help();
@@ -8163,13 +8163,13 @@ var require_command = __commonJS({
         this._showSuggestionAfterError = true;
         this._savedState = null;
         this._outputConfiguration = {
-          writeOut: (str) => process2.stdout.write(str),
-          writeErr: (str) => process2.stderr.write(str),
+          writeOut: (str) => process3.stdout.write(str),
+          writeErr: (str) => process3.stderr.write(str),
           outputError: (str, write) => write(str),
-          getOutHelpWidth: () => process2.stdout.isTTY ? process2.stdout.columns : void 0,
-          getErrHelpWidth: () => process2.stderr.isTTY ? process2.stderr.columns : void 0,
-          getOutHasColors: () => useColor() ?? (process2.stdout.isTTY && process2.stdout.hasColors?.()),
-          getErrHasColors: () => useColor() ?? (process2.stderr.isTTY && process2.stderr.hasColors?.()),
+          getOutHelpWidth: () => process3.stdout.isTTY ? process3.stdout.columns : void 0,
+          getErrHelpWidth: () => process3.stderr.isTTY ? process3.stderr.columns : void 0,
+          getOutHasColors: () => useColor() ?? (process3.stdout.isTTY && process3.stdout.hasColors?.()),
+          getErrHasColors: () => useColor() ?? (process3.stderr.isTTY && process3.stderr.hasColors?.()),
           stripColor: (str) => stripColor(str)
         };
         this._hidden = false;
@@ -8564,7 +8564,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         if (this._exitCallback) {
           this._exitCallback(new CommanderError(exitCode, code, message));
         }
-        process2.exit(exitCode);
+        process3.exit(exitCode);
       }
       /**
        * Register callback `fn` for the command.
@@ -8964,16 +8964,16 @@ Expecting one of '${allowedValues.join("', '")}'`);
         }
         parseOptions = parseOptions || {};
         if (argv === void 0 && parseOptions.from === void 0) {
-          if (process2.versions?.electron) {
+          if (process3.versions?.electron) {
             parseOptions.from = "electron";
           }
-          const execArgv = process2.execArgv ?? [];
+          const execArgv = process3.execArgv ?? [];
           if (execArgv.includes("-e") || execArgv.includes("--eval") || execArgv.includes("-p") || execArgv.includes("--print")) {
             parseOptions.from = "eval";
           }
         }
         if (argv === void 0) {
-          argv = process2.argv;
+          argv = process3.argv;
         }
         this.rawArgs = argv.slice();
         let userArgs;
@@ -8984,7 +8984,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
             userArgs = argv.slice(2);
             break;
           case "electron":
-            if (process2.defaultApp) {
+            if (process3.defaultApp) {
               this._scriptPath = argv[1];
               userArgs = argv.slice(2);
             } else {
@@ -9171,11 +9171,11 @@ Expecting one of '${allowedValues.join("', '")}'`);
         }
         launchWithNode = sourceExt.includes(path2.extname(executableFile));
         let proc;
-        if (process2.platform !== "win32") {
+        if (process3.platform !== "win32") {
           if (launchWithNode) {
             args.unshift(executableFile);
-            args = incrementNodeInspectorPort(process2.execArgv).concat(args);
-            proc = childProcess.spawn(process2.argv[0], args, { stdio: "inherit" });
+            args = incrementNodeInspectorPort(process3.execArgv).concat(args);
+            proc = childProcess.spawn(process3.argv[0], args, { stdio: "inherit" });
           } else {
             proc = childProcess.spawn(executableFile, args, { stdio: "inherit" });
           }
@@ -9186,13 +9186,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
             subcommand._name
           );
           args.unshift(executableFile);
-          args = incrementNodeInspectorPort(process2.execArgv).concat(args);
-          proc = childProcess.spawn(process2.execPath, args, { stdio: "inherit" });
+          args = incrementNodeInspectorPort(process3.execArgv).concat(args);
+          proc = childProcess.spawn(process3.execPath, args, { stdio: "inherit" });
         }
         if (!proc.killed) {
           const signals = ["SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT", "SIGHUP"];
           signals.forEach((signal) => {
-            process2.on(signal, () => {
+            process3.on(signal, () => {
               if (proc.killed === false && proc.exitCode === null) {
                 proc.kill(signal);
               }
@@ -9203,7 +9203,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         proc.on("close", (code) => {
           code = code ?? 1;
           if (!exitCallback) {
-            process2.exit(code);
+            process3.exit(code);
           } else {
             exitCallback(
               new CommanderError(
@@ -9225,7 +9225,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
             throw new Error(`'${executableFile}' not executable`);
           }
           if (!exitCallback) {
-            process2.exit(1);
+            process3.exit(1);
           } else {
             const wrappedError = new CommanderError(
               1,
@@ -9726,13 +9726,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
        */
       _parseOptionsEnv() {
         this.options.forEach((option) => {
-          if (option.envVar && option.envVar in process2.env) {
+          if (option.envVar && option.envVar in process3.env) {
             const optionKey = option.attributeName();
             if (this.getOptionValue(optionKey) === void 0 || ["default", "config", "env"].includes(
               this.getOptionValueSource(optionKey)
             )) {
               if (option.required || option.optional) {
-                this.emit(`optionEnv:${option.name()}`, process2.env[option.envVar]);
+                this.emit(`optionEnv:${option.name()}`, process3.env[option.envVar]);
               } else {
                 this.emit(`optionEnv:${option.name()}`);
               }
@@ -10256,7 +10256,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
        */
       help(contextOptions) {
         this.outputHelp(contextOptions);
-        let exitCode = Number(process2.exitCode ?? 0);
+        let exitCode = Number(process3.exitCode ?? 0);
         if (exitCode === 0 && contextOptions && typeof contextOptions !== "function" && contextOptions.error) {
           exitCode = 1;
         }
@@ -10346,9 +10346,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
       });
     }
     function useColor() {
-      if (process2.env.NO_COLOR || process2.env.FORCE_COLOR === "0" || process2.env.FORCE_COLOR === "false")
+      if (process3.env.NO_COLOR || process3.env.FORCE_COLOR === "0" || process3.env.FORCE_COLOR === "false")
         return false;
-      if (process2.env.FORCE_COLOR || process2.env.CLICOLOR_FORCE !== void 0)
+      if (process3.env.FORCE_COLOR || process3.env.CLICOLOR_FORCE !== void 0)
         return true;
       return void 0;
     }
@@ -10481,10 +10481,10 @@ function binop(name, prec) {
 var beforeExpr = { beforeExpr: true };
 var startsExpr = { startsExpr: true };
 var keywords = {};
-function kw(name, options) {
-  if (options === void 0) options = {};
-  options.keyword = name;
-  return keywords[name] = new TokenType(name, options);
+function kw(name, options2) {
+  if (options2 === void 0) options2 = {};
+  options2.keyword = name;
+  return keywords[name] = new TokenType(name, options2);
 }
 var types$1 = {
   num: new TokenType("num", startsExpr),
@@ -10741,39 +10741,39 @@ var defaultOptions = {
 };
 var warnedAboutEcmaVersion = false;
 function getOptions(opts) {
-  var options = {};
+  var options2 = {};
   for (var opt in defaultOptions) {
-    options[opt] = opts && hasOwn(opts, opt) ? opts[opt] : defaultOptions[opt];
+    options2[opt] = opts && hasOwn(opts, opt) ? opts[opt] : defaultOptions[opt];
   }
-  if (options.ecmaVersion === "latest") {
-    options.ecmaVersion = 1e8;
-  } else if (options.ecmaVersion == null) {
+  if (options2.ecmaVersion === "latest") {
+    options2.ecmaVersion = 1e8;
+  } else if (options2.ecmaVersion == null) {
     if (!warnedAboutEcmaVersion && typeof console === "object" && console.warn) {
       warnedAboutEcmaVersion = true;
       console.warn("Since Acorn 8.0.0, options.ecmaVersion is required.\nDefaulting to 2020, but this will stop working in the future.");
     }
-    options.ecmaVersion = 11;
-  } else if (options.ecmaVersion >= 2015) {
-    options.ecmaVersion -= 2009;
+    options2.ecmaVersion = 11;
+  } else if (options2.ecmaVersion >= 2015) {
+    options2.ecmaVersion -= 2009;
   }
-  if (options.allowReserved == null) {
-    options.allowReserved = options.ecmaVersion < 5;
+  if (options2.allowReserved == null) {
+    options2.allowReserved = options2.ecmaVersion < 5;
   }
   if (!opts || opts.allowHashBang == null) {
-    options.allowHashBang = options.ecmaVersion >= 14;
+    options2.allowHashBang = options2.ecmaVersion >= 14;
   }
-  if (isArray(options.onToken)) {
-    var tokens = options.onToken;
-    options.onToken = function(token) {
+  if (isArray(options2.onToken)) {
+    var tokens = options2.onToken;
+    options2.onToken = function(token) {
       return tokens.push(token);
     };
   }
-  if (isArray(options.onComment)) {
-    options.onComment = pushComment(options, options.onComment);
+  if (isArray(options2.onComment)) {
+    options2.onComment = pushComment(options2, options2.onComment);
   }
-  return options;
+  return options2;
 }
-function pushComment(options, array) {
+function pushComment(options2, array) {
   return function(block, text, start, end, startLoc, endLoc) {
     var comment = {
       type: block ? "Block" : "Line",
@@ -10781,10 +10781,10 @@ function pushComment(options, array) {
       start,
       end
     };
-    if (options.locations) {
+    if (options2.locations) {
       comment.loc = new SourceLocation(this, startLoc, endLoc);
     }
-    if (options.ranges) {
+    if (options2.ranges) {
       comment.range = [start, end];
     }
     array.push(comment);
@@ -10810,14 +10810,14 @@ var BIND_LEXICAL = 2;
 var BIND_FUNCTION = 3;
 var BIND_SIMPLE_CATCH = 4;
 var BIND_OUTSIDE = 5;
-var Parser = function Parser2(options, input, startPos) {
-  this.options = options = getOptions(options);
-  this.sourceFile = options.sourceFile;
-  this.keywords = wordsRegexp(keywords$1[options.ecmaVersion >= 6 ? 6 : options.sourceType === "module" ? "5module" : 5]);
+var Parser = function Parser2(options2, input, startPos) {
+  this.options = options2 = getOptions(options2);
+  this.sourceFile = options2.sourceFile;
+  this.keywords = wordsRegexp(keywords$1[options2.ecmaVersion >= 6 ? 6 : options2.sourceType === "module" ? "5module" : 5]);
   var reserved = "";
-  if (options.allowReserved !== true) {
-    reserved = reservedWords[options.ecmaVersion >= 6 ? 6 : options.ecmaVersion === 5 ? 5 : 3];
-    if (options.sourceType === "module") {
+  if (options2.allowReserved !== true) {
+    reserved = reservedWords[options2.ecmaVersion >= 6 ? 6 : options2.ecmaVersion === 5 ? 5 : 3];
+    if (options2.sourceType === "module") {
       reserved += " await";
     }
   }
@@ -10843,14 +10843,14 @@ var Parser = function Parser2(options, input, startPos) {
   this.lastTokStart = this.lastTokEnd = this.pos;
   this.context = this.initialContext();
   this.exprAllowed = true;
-  this.inModule = options.sourceType === "module";
+  this.inModule = options2.sourceType === "module";
   this.strict = this.inModule || this.strictDirective(this.pos);
   this.potentialArrowAt = -1;
   this.potentialArrowInForAwait = false;
   this.yieldPos = this.awaitPos = this.awaitIdentPos = 0;
   this.labels = [];
   this.undefinedExports = /* @__PURE__ */ Object.create(null);
-  if (this.pos === 0 && options.allowHashBang && this.input.slice(0, 2) === "#!") {
+  if (this.pos === 0 && options2.allowHashBang && this.input.slice(0, 2) === "#!") {
     this.skipLineComment(2);
   }
   this.scopeStack = [];
@@ -10919,16 +10919,16 @@ Parser.extend = function extend() {
   }
   return cls;
 };
-Parser.parse = function parse2(input, options) {
-  return new this(options, input).parse();
+Parser.parse = function parse2(input, options2) {
+  return new this(options2, input).parse();
 };
-Parser.parseExpressionAt = function parseExpressionAt(input, pos, options) {
-  var parser = new this(options, input, pos);
+Parser.parseExpressionAt = function parseExpressionAt(input, pos, options2) {
+  var parser = new this(options2, input, pos);
   parser.nextToken();
   return parser.parseExpression();
 };
-Parser.tokenizer = function tokenizer(input, options) {
-  return new this(options, input);
+Parser.tokenizer = function tokenizer(input, options2) {
+  return new this(options2, input);
 };
 Object.defineProperties(Parser.prototype, prototypeAccessors);
 var pp$9 = Parser.prototype;
@@ -16206,24 +16206,24 @@ function normalizeSourceType(sourceType = "script") {
   }
   throw new Error("Invalid sourceType.");
 }
-function normalizeOptions(options) {
-  const ecmaVersion = normalizeEcmaVersion(options.ecmaVersion);
-  const sourceType = normalizeSourceType(options.sourceType);
-  const ranges = options.range === true;
-  const locations = options.loc === true;
-  if (ecmaVersion !== 3 && options.allowReserved) {
+function normalizeOptions(options2) {
+  const ecmaVersion = normalizeEcmaVersion(options2.ecmaVersion);
+  const sourceType = normalizeSourceType(options2.sourceType);
+  const ranges = options2.range === true;
+  const locations = options2.loc === true;
+  if (ecmaVersion !== 3 && options2.allowReserved) {
     throw new Error("`allowReserved` is only supported when ecmaVersion is 3");
   }
-  if (typeof options.allowReserved !== "undefined" && typeof options.allowReserved !== "boolean") {
+  if (typeof options2.allowReserved !== "undefined" && typeof options2.allowReserved !== "boolean") {
     throw new Error("`allowReserved`, when present, must be `true` or `false`");
   }
-  const allowReserved = ecmaVersion === 3 ? options.allowReserved || "never" : false;
-  const ecmaFeatures = options.ecmaFeatures || {};
-  const allowReturnOutsideFunction = options.sourceType === "commonjs" || Boolean(ecmaFeatures.globalReturn);
+  const allowReserved = ecmaVersion === 3 ? options2.allowReserved || "never" : false;
+  const ecmaFeatures = options2.ecmaFeatures || {};
+  const allowReturnOutsideFunction = options2.sourceType === "commonjs" || Boolean(ecmaFeatures.globalReturn);
   if (sourceType === "module" && ecmaVersion < 6) {
     throw new Error("sourceType 'module' is not supported when ecmaVersion < 2015. Consider adding `{ ecmaVersion: 2015 }` to the parser options.");
   }
-  return Object.assign({}, options, {
+  return Object.assign({}, options2, {
     ecmaVersion,
     sourceType,
     ranges,
@@ -16276,28 +16276,28 @@ var espree_default = () => (Parser3) => {
         code = String(code);
       }
       const originalSourceType = opts.sourceType;
-      const options = normalizeOptions(opts);
-      const ecmaFeatures = options.ecmaFeatures || {};
-      const tokenTranslator = options.tokens === true ? new token_translator_default(tokTypes, code) : null;
+      const options2 = normalizeOptions(opts);
+      const ecmaFeatures = options2.ecmaFeatures || {};
+      const tokenTranslator = options2.tokens === true ? new token_translator_default(tokTypes, code) : null;
       const state = {
-        originalSourceType: originalSourceType || options.sourceType,
+        originalSourceType: originalSourceType || options2.sourceType,
         tokens: tokenTranslator ? [] : null,
-        comments: options.comment === true ? [] : null,
-        impliedStrict: ecmaFeatures.impliedStrict === true && options.ecmaVersion >= 5,
-        ecmaVersion: options.ecmaVersion,
+        comments: options2.comment === true ? [] : null,
+        impliedStrict: ecmaFeatures.impliedStrict === true && options2.ecmaVersion >= 5,
+        ecmaVersion: options2.ecmaVersion,
         jsxAttrValueToken: false,
         lastToken: null,
         templateElements: []
       };
       super({
         // do not use spread, because we don't want to pass any unknown options to acorn
-        ecmaVersion: options.ecmaVersion,
-        sourceType: options.sourceType,
-        ranges: options.ranges,
-        locations: options.locations,
-        allowReserved: options.allowReserved,
+        ecmaVersion: options2.ecmaVersion,
+        sourceType: options2.sourceType,
+        ranges: options2.ranges,
+        locations: options2.locations,
+        allowReserved: options2.allowReserved,
         // Truthy value is true for backward compatibility.
-        allowReturnOutsideFunction: options.allowReturnOutsideFunction,
+        allowReturnOutsideFunction: options2.allowReturnOutsideFunction,
         // Collect tokens
         onToken(token) {
           if (tokenTranslator) {
@@ -16796,16 +16796,16 @@ var parsers = {
     }
     return this._jsx;
   },
-  get(options) {
+  get(options2) {
     const useJsx = Boolean(
-      options && options.ecmaFeatures && options.ecmaFeatures.jsx
+      options2 && options2.ecmaFeatures && options2.ecmaFeatures.jsx
     );
     return useJsx ? this.jsx : this.regular;
   }
 };
-function parse3(code, options) {
-  const Parser3 = parsers.get(options);
-  return new Parser3(options, code).parse();
+function parse3(code, options2) {
+  const Parser3 = parsers.get(options2);
+  return new Parser3(options2, code).parse();
 }
 var VisitorKeys = /* @__PURE__ */ function() {
   return visitor_keys_default;
@@ -16964,7 +16964,509 @@ var rules_default = listenersMap;
 
 // src/linter.ts
 var import_node_fs2 = __toESM(require("node:fs"));
-function run(path2) {
+var import_node_path2 = __toESM(require("node:path"));
+
+// node_modules/chalk/source/vendor/ansi-styles/index.js
+var ANSI_BACKGROUND_OFFSET = 10;
+var wrapAnsi16 = (offset2 = 0) => (code) => `\x1B[${code + offset2}m`;
+var wrapAnsi256 = (offset2 = 0) => (code) => `\x1B[${38 + offset2};5;${code}m`;
+var wrapAnsi16m = (offset2 = 0) => (red, green, blue) => `\x1B[${38 + offset2};2;${red};${green};${blue}m`;
+var styles = {
+  modifier: {
+    reset: [0, 0],
+    // 21 isn't widely supported and 22 does the same thing
+    bold: [1, 22],
+    dim: [2, 22],
+    italic: [3, 23],
+    underline: [4, 24],
+    overline: [53, 55],
+    inverse: [7, 27],
+    hidden: [8, 28],
+    strikethrough: [9, 29]
+  },
+  color: {
+    black: [30, 39],
+    red: [31, 39],
+    green: [32, 39],
+    yellow: [33, 39],
+    blue: [34, 39],
+    magenta: [35, 39],
+    cyan: [36, 39],
+    white: [37, 39],
+    // Bright color
+    blackBright: [90, 39],
+    gray: [90, 39],
+    // Alias of `blackBright`
+    grey: [90, 39],
+    // Alias of `blackBright`
+    redBright: [91, 39],
+    greenBright: [92, 39],
+    yellowBright: [93, 39],
+    blueBright: [94, 39],
+    magentaBright: [95, 39],
+    cyanBright: [96, 39],
+    whiteBright: [97, 39]
+  },
+  bgColor: {
+    bgBlack: [40, 49],
+    bgRed: [41, 49],
+    bgGreen: [42, 49],
+    bgYellow: [43, 49],
+    bgBlue: [44, 49],
+    bgMagenta: [45, 49],
+    bgCyan: [46, 49],
+    bgWhite: [47, 49],
+    // Bright color
+    bgBlackBright: [100, 49],
+    bgGray: [100, 49],
+    // Alias of `bgBlackBright`
+    bgGrey: [100, 49],
+    // Alias of `bgBlackBright`
+    bgRedBright: [101, 49],
+    bgGreenBright: [102, 49],
+    bgYellowBright: [103, 49],
+    bgBlueBright: [104, 49],
+    bgMagentaBright: [105, 49],
+    bgCyanBright: [106, 49],
+    bgWhiteBright: [107, 49]
+  }
+};
+var modifierNames = Object.keys(styles.modifier);
+var foregroundColorNames = Object.keys(styles.color);
+var backgroundColorNames = Object.keys(styles.bgColor);
+var colorNames = [...foregroundColorNames, ...backgroundColorNames];
+function assembleStyles() {
+  const codes = /* @__PURE__ */ new Map();
+  for (const [groupName, group] of Object.entries(styles)) {
+    for (const [styleName, style] of Object.entries(group)) {
+      styles[styleName] = {
+        open: `\x1B[${style[0]}m`,
+        close: `\x1B[${style[1]}m`
+      };
+      group[styleName] = styles[styleName];
+      codes.set(style[0], style[1]);
+    }
+    Object.defineProperty(styles, groupName, {
+      value: group,
+      enumerable: false
+    });
+  }
+  Object.defineProperty(styles, "codes", {
+    value: codes,
+    enumerable: false
+  });
+  styles.color.close = "\x1B[39m";
+  styles.bgColor.close = "\x1B[49m";
+  styles.color.ansi = wrapAnsi16();
+  styles.color.ansi256 = wrapAnsi256();
+  styles.color.ansi16m = wrapAnsi16m();
+  styles.bgColor.ansi = wrapAnsi16(ANSI_BACKGROUND_OFFSET);
+  styles.bgColor.ansi256 = wrapAnsi256(ANSI_BACKGROUND_OFFSET);
+  styles.bgColor.ansi16m = wrapAnsi16m(ANSI_BACKGROUND_OFFSET);
+  Object.defineProperties(styles, {
+    rgbToAnsi256: {
+      value(red, green, blue) {
+        if (red === green && green === blue) {
+          if (red < 8) {
+            return 16;
+          }
+          if (red > 248) {
+            return 231;
+          }
+          return Math.round((red - 8) / 247 * 24) + 232;
+        }
+        return 16 + 36 * Math.round(red / 255 * 5) + 6 * Math.round(green / 255 * 5) + Math.round(blue / 255 * 5);
+      },
+      enumerable: false
+    },
+    hexToRgb: {
+      value(hex) {
+        const matches = /[a-f\d]{6}|[a-f\d]{3}/i.exec(hex.toString(16));
+        if (!matches) {
+          return [0, 0, 0];
+        }
+        let [colorString] = matches;
+        if (colorString.length === 3) {
+          colorString = [...colorString].map((character) => character + character).join("");
+        }
+        const integer = Number.parseInt(colorString, 16);
+        return [
+          /* eslint-disable no-bitwise */
+          integer >> 16 & 255,
+          integer >> 8 & 255,
+          integer & 255
+          /* eslint-enable no-bitwise */
+        ];
+      },
+      enumerable: false
+    },
+    hexToAnsi256: {
+      value: (hex) => styles.rgbToAnsi256(...styles.hexToRgb(hex)),
+      enumerable: false
+    },
+    ansi256ToAnsi: {
+      value(code) {
+        if (code < 8) {
+          return 30 + code;
+        }
+        if (code < 16) {
+          return 90 + (code - 8);
+        }
+        let red;
+        let green;
+        let blue;
+        if (code >= 232) {
+          red = ((code - 232) * 10 + 8) / 255;
+          green = red;
+          blue = red;
+        } else {
+          code -= 16;
+          const remainder = code % 36;
+          red = Math.floor(code / 36) / 5;
+          green = Math.floor(remainder / 6) / 5;
+          blue = remainder % 6 / 5;
+        }
+        const value = Math.max(red, green, blue) * 2;
+        if (value === 0) {
+          return 30;
+        }
+        let result = 30 + (Math.round(blue) << 2 | Math.round(green) << 1 | Math.round(red));
+        if (value === 2) {
+          result += 60;
+        }
+        return result;
+      },
+      enumerable: false
+    },
+    rgbToAnsi: {
+      value: (red, green, blue) => styles.ansi256ToAnsi(styles.rgbToAnsi256(red, green, blue)),
+      enumerable: false
+    },
+    hexToAnsi: {
+      value: (hex) => styles.ansi256ToAnsi(styles.hexToAnsi256(hex)),
+      enumerable: false
+    }
+  });
+  return styles;
+}
+var ansiStyles = assembleStyles();
+var ansi_styles_default = ansiStyles;
+
+// node_modules/chalk/source/vendor/supports-color/index.js
+var import_node_process = __toESM(require("node:process"), 1);
+var import_node_os = __toESM(require("node:os"), 1);
+var import_node_tty = __toESM(require("node:tty"), 1);
+function hasFlag(flag, argv = globalThis.Deno ? globalThis.Deno.args : import_node_process.default.argv) {
+  const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+  const position = argv.indexOf(prefix + flag);
+  const terminatorPosition = argv.indexOf("--");
+  return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+}
+var { env } = import_node_process.default;
+var flagForceColor;
+if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
+  flagForceColor = 0;
+} else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
+  flagForceColor = 1;
+}
+function envForceColor() {
+  if ("FORCE_COLOR" in env) {
+    if (env.FORCE_COLOR === "true") {
+      return 1;
+    }
+    if (env.FORCE_COLOR === "false") {
+      return 0;
+    }
+    return env.FORCE_COLOR.length === 0 ? 1 : Math.min(Number.parseInt(env.FORCE_COLOR, 10), 3);
+  }
+}
+function translateLevel(level) {
+  if (level === 0) {
+    return false;
+  }
+  return {
+    level,
+    hasBasic: true,
+    has256: level >= 2,
+    has16m: level >= 3
+  };
+}
+function _supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
+  const noFlagForceColor = envForceColor();
+  if (noFlagForceColor !== void 0) {
+    flagForceColor = noFlagForceColor;
+  }
+  const forceColor = sniffFlags ? flagForceColor : noFlagForceColor;
+  if (forceColor === 0) {
+    return 0;
+  }
+  if (sniffFlags) {
+    if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
+      return 3;
+    }
+    if (hasFlag("color=256")) {
+      return 2;
+    }
+  }
+  if ("TF_BUILD" in env && "AGENT_NAME" in env) {
+    return 1;
+  }
+  if (haveStream && !streamIsTTY && forceColor === void 0) {
+    return 0;
+  }
+  const min = forceColor || 0;
+  if (env.TERM === "dumb") {
+    return min;
+  }
+  if (import_node_process.default.platform === "win32") {
+    const osRelease = import_node_os.default.release().split(".");
+    if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+      return Number(osRelease[2]) >= 14931 ? 3 : 2;
+    }
+    return 1;
+  }
+  if ("CI" in env) {
+    if (["GITHUB_ACTIONS", "GITEA_ACTIONS", "CIRCLECI"].some((key) => key in env)) {
+      return 3;
+    }
+    if (["TRAVIS", "APPVEYOR", "GITLAB_CI", "BUILDKITE", "DRONE"].some((sign) => sign in env) || env.CI_NAME === "codeship") {
+      return 1;
+    }
+    return min;
+  }
+  if ("TEAMCITY_VERSION" in env) {
+    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+  }
+  if (env.COLORTERM === "truecolor") {
+    return 3;
+  }
+  if (env.TERM === "xterm-kitty") {
+    return 3;
+  }
+  if ("TERM_PROGRAM" in env) {
+    const version2 = Number.parseInt((env.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+    switch (env.TERM_PROGRAM) {
+      case "iTerm.app": {
+        return version2 >= 3 ? 3 : 2;
+      }
+      case "Apple_Terminal": {
+        return 2;
+      }
+    }
+  }
+  if (/-256(color)?$/i.test(env.TERM)) {
+    return 2;
+  }
+  if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+    return 1;
+  }
+  if ("COLORTERM" in env) {
+    return 1;
+  }
+  return min;
+}
+function createSupportsColor(stream, options2 = {}) {
+  const level = _supportsColor(stream, {
+    streamIsTTY: stream && stream.isTTY,
+    ...options2
+  });
+  return translateLevel(level);
+}
+var supportsColor = {
+  stdout: createSupportsColor({ isTTY: import_node_tty.default.isatty(1) }),
+  stderr: createSupportsColor({ isTTY: import_node_tty.default.isatty(2) })
+};
+var supports_color_default = supportsColor;
+
+// node_modules/chalk/source/utilities.js
+function stringReplaceAll(string, substring, replacer) {
+  let index = string.indexOf(substring);
+  if (index === -1) {
+    return string;
+  }
+  const substringLength = substring.length;
+  let endIndex = 0;
+  let returnValue = "";
+  do {
+    returnValue += string.slice(endIndex, index) + substring + replacer;
+    endIndex = index + substringLength;
+    index = string.indexOf(substring, endIndex);
+  } while (index !== -1);
+  returnValue += string.slice(endIndex);
+  return returnValue;
+}
+function stringEncaseCRLFWithFirstIndex(string, prefix, postfix, index) {
+  let endIndex = 0;
+  let returnValue = "";
+  do {
+    const gotCR = string[index - 1] === "\r";
+    returnValue += string.slice(endIndex, gotCR ? index - 1 : index) + prefix + (gotCR ? "\r\n" : "\n") + postfix;
+    endIndex = index + 1;
+    index = string.indexOf("\n", endIndex);
+  } while (index !== -1);
+  returnValue += string.slice(endIndex);
+  return returnValue;
+}
+
+// node_modules/chalk/source/index.js
+var { stdout: stdoutColor, stderr: stderrColor } = supports_color_default;
+var GENERATOR = Symbol("GENERATOR");
+var STYLER = Symbol("STYLER");
+var IS_EMPTY = Symbol("IS_EMPTY");
+var levelMapping = [
+  "ansi",
+  "ansi",
+  "ansi256",
+  "ansi16m"
+];
+var styles2 = /* @__PURE__ */ Object.create(null);
+var applyOptions = (object, options2 = {}) => {
+  if (options2.level && !(Number.isInteger(options2.level) && options2.level >= 0 && options2.level <= 3)) {
+    throw new Error("The `level` option should be an integer from 0 to 3");
+  }
+  const colorLevel = stdoutColor ? stdoutColor.level : 0;
+  object.level = options2.level === void 0 ? colorLevel : options2.level;
+};
+var chalkFactory = (options2) => {
+  const chalk2 = (...strings) => strings.join(" ");
+  applyOptions(chalk2, options2);
+  Object.setPrototypeOf(chalk2, createChalk.prototype);
+  return chalk2;
+};
+function createChalk(options2) {
+  return chalkFactory(options2);
+}
+Object.setPrototypeOf(createChalk.prototype, Function.prototype);
+for (const [styleName, style] of Object.entries(ansi_styles_default)) {
+  styles2[styleName] = {
+    get() {
+      const builder = createBuilder(this, createStyler(style.open, style.close, this[STYLER]), this[IS_EMPTY]);
+      Object.defineProperty(this, styleName, { value: builder });
+      return builder;
+    }
+  };
+}
+styles2.visible = {
+  get() {
+    const builder = createBuilder(this, this[STYLER], true);
+    Object.defineProperty(this, "visible", { value: builder });
+    return builder;
+  }
+};
+var getModelAnsi = (model, level, type, ...arguments_) => {
+  if (model === "rgb") {
+    if (level === "ansi16m") {
+      return ansi_styles_default[type].ansi16m(...arguments_);
+    }
+    if (level === "ansi256") {
+      return ansi_styles_default[type].ansi256(ansi_styles_default.rgbToAnsi256(...arguments_));
+    }
+    return ansi_styles_default[type].ansi(ansi_styles_default.rgbToAnsi(...arguments_));
+  }
+  if (model === "hex") {
+    return getModelAnsi("rgb", level, type, ...ansi_styles_default.hexToRgb(...arguments_));
+  }
+  return ansi_styles_default[type][model](...arguments_);
+};
+var usedModels = ["rgb", "hex", "ansi256"];
+for (const model of usedModels) {
+  styles2[model] = {
+    get() {
+      const { level } = this;
+      return function(...arguments_) {
+        const styler = createStyler(getModelAnsi(model, levelMapping[level], "color", ...arguments_), ansi_styles_default.color.close, this[STYLER]);
+        return createBuilder(this, styler, this[IS_EMPTY]);
+      };
+    }
+  };
+  const bgModel = "bg" + model[0].toUpperCase() + model.slice(1);
+  styles2[bgModel] = {
+    get() {
+      const { level } = this;
+      return function(...arguments_) {
+        const styler = createStyler(getModelAnsi(model, levelMapping[level], "bgColor", ...arguments_), ansi_styles_default.bgColor.close, this[STYLER]);
+        return createBuilder(this, styler, this[IS_EMPTY]);
+      };
+    }
+  };
+}
+var proto = Object.defineProperties(() => {
+}, {
+  ...styles2,
+  level: {
+    enumerable: true,
+    get() {
+      return this[GENERATOR].level;
+    },
+    set(level) {
+      this[GENERATOR].level = level;
+    }
+  }
+});
+var createStyler = (open, close, parent) => {
+  let openAll;
+  let closeAll;
+  if (parent === void 0) {
+    openAll = open;
+    closeAll = close;
+  } else {
+    openAll = parent.openAll + open;
+    closeAll = close + parent.closeAll;
+  }
+  return {
+    open,
+    close,
+    openAll,
+    closeAll,
+    parent
+  };
+};
+var createBuilder = (self2, _styler, _isEmpty) => {
+  const builder = (...arguments_) => applyStyle(builder, arguments_.length === 1 ? "" + arguments_[0] : arguments_.join(" "));
+  Object.setPrototypeOf(builder, proto);
+  builder[GENERATOR] = self2;
+  builder[STYLER] = _styler;
+  builder[IS_EMPTY] = _isEmpty;
+  return builder;
+};
+var applyStyle = (self2, string) => {
+  if (self2.level <= 0 || !string) {
+    return self2[IS_EMPTY] ? "" : string;
+  }
+  let styler = self2[STYLER];
+  if (styler === void 0) {
+    return string;
+  }
+  const { openAll, closeAll } = styler;
+  if (string.includes("\x1B")) {
+    while (styler !== void 0) {
+      string = stringReplaceAll(string, styler.close, styler.open);
+      styler = styler.parent;
+    }
+  }
+  const lfIndex = string.indexOf("\n");
+  if (lfIndex !== -1) {
+    string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
+  }
+  return openAll + string + closeAll;
+};
+Object.defineProperties(createChalk.prototype, styles2);
+var chalk = createChalk();
+var chalkStderr = createChalk({ level: stderrColor ? stderrColor.level : 0 });
+var source_default = chalk;
+
+// src/linter.ts
+var errorFlag = false;
+function run({ path: path2, isGlobal: isGlobal2 }) {
+  if (path2) {
+    worker(path2);
+  } else if (isGlobal2) {
+    const files = getAllJsFile(process.cwd());
+    files.forEach((filePath) => worker(filePath));
+  }
+  process.exit(errorFlag ? 1 : 0);
+}
+function worker(path2) {
   const text = getCode(path2);
   const ast = getAST(text);
   traverseAST(ast);
@@ -16993,21 +17495,52 @@ function traverseAST(ast) {
       if (node.type === "Program") {
         const leaveFns = rules_default.get("report");
         leaveFns?.forEach((fn) => {
+          errorFlag = true;
           const report = fn();
           report.forEach(({ start, message }) => {
-            console.log(`Position: ${start} - ${message}`);
+            console.log(source_default.red(`Position: ${start} - ${message}`));
           });
         });
       }
     }
   });
 }
+function getAllJsFile(dirPath) {
+  try {
+    const files = import_node_fs2.default.readdirSync(dirPath);
+    const allFiles = [];
+    files.forEach((file) => {
+      const filePath = import_node_path2.default.join(dirPath, file);
+      const stat = import_node_fs2.default.statSync(filePath);
+      if (stat.isFile()) {
+        if (filePath.endsWith(".js")) allFiles.push(filePath);
+      } else if (stat.isDirectory()) {
+        const subFiles = getAllJsFile(filePath);
+        allFiles.push(...subFiles);
+      }
+    });
+    return allFiles;
+  } catch (error) {
+    console.error("\u8BFB\u53D6\u76EE\u5F55\u65F6\u51FA\u9519:", error);
+    return [];
+  }
+}
 
 // src/cli.ts
 var { program } = require_commander();
 var path = require("path");
-program.name("mini-eslint").argument("<path>");
+program.name("mini-eslint").option("--global", "\u662F\u5426\u626B\u63CF\u5F53\u524D\u76EE\u5F55").argument("[path]", "\u6587\u4EF6\u8DEF\u5F84");
 program.parse();
+var options = program.opts();
+var isGlobal = options.global === true;
 var inputPath = program.args[0];
-var absolutePath = path.resolve(inputPath);
-run(absolutePath);
+if (!isGlobal && inputPath === void 0) {
+  process.exit(1);
+} else if (isGlobal && inputPath !== void 0) {
+  process.exit(1);
+} else if (inputPath !== void 0) {
+  const absolutePath = path.resolve(inputPath);
+  run({ path: absolutePath });
+} else {
+  run({ isGlobal: true });
+}
