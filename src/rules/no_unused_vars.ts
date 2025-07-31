@@ -27,7 +27,8 @@ export default {
         const reports: Report[] = [];
         declared.forEach(({ node }, varName) => {
           reports.push({
-            start: (node as any).start,
+            // start: (node as any).start,
+            node,
             message: `unused var: ${varName}`,
           });
         });

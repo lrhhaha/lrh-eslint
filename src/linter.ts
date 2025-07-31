@@ -37,7 +37,7 @@ function getCode(path: string) {
 }
 
 function getAST(code: string) {
-  const ast = espree.parse(code, { ecmaVersion: 2022 });
+  const ast = espree.parse(code, { ecmaVersion: 2022, tokens: true, loc: true });
   // console.dir(ast, { depth: null });
   return ast;
 }
@@ -57,8 +57,11 @@ function traverseAST(ast: ESTreeNode) {
           errorFlag = true;
           const report = fn();
 
-          report.forEach(({ start, message }: any) => {
-            console.log(chalk.red(`Position: ${start} - ${message}`));
+          report.forEach(({ node, message }: any) => {
+            // console.log(node)
+            const { start } = node.loc
+            const { line, column } = start
+            console.log(chalk.red(`Position: line:${line} - column:${column} - ${message}`));
           });
         });
       }

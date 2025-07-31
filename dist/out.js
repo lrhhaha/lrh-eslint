@@ -16844,7 +16844,8 @@ var no_unused_vars_default = {
         const reports = [];
         declared.forEach(({ node }, varName) => {
           reports.push({
-            start: node.start,
+            // start: (node as any).start,
+            node,
             message: `unused var: ${varName}`
           });
         });
@@ -17480,7 +17481,7 @@ function getCode(path2) {
   }
 }
 function getAST(code) {
-  const ast = parse3(code, { ecmaVersion: 2022 });
+  const ast = parse3(code, { ecmaVersion: 2022, tokens: true, loc: true });
   return ast;
 }
 function traverseAST(ast) {
@@ -17497,8 +17498,10 @@ function traverseAST(ast) {
         leaveFns?.forEach((fn) => {
           errorFlag = true;
           const report = fn();
-          report.forEach(({ start, message }) => {
-            console.log(source_default.red(`Position: ${start} - ${message}`));
+          report.forEach(({ node: node2, message }) => {
+            const { start } = node2.loc;
+            const { line, column } = start;
+            console.log(source_default.red(`Position: line:${line} - column:${column} - ${message}`));
           });
         });
       }

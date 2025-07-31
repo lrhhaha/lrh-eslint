@@ -1,4 +1,4 @@
-import type { NodeMap } from "estree";
+import type { NodeMap, Node as ESTreeNode, } from "estree";
 
 export type Rules = {
   [key: string]: {
@@ -12,7 +12,8 @@ export type Config = {
 };
 
 export type Report = {
-  start: number;
+  // start: number;
+  node: ESTreeNode;
   message: string;
 }
 
