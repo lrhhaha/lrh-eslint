@@ -1,5 +1,8 @@
 # 依赖库
 
+## eslint
+https://zh-hans.eslint.org/
+
 ## esbuild
 - 项目打包
 - 提供开发环境实时打包功能

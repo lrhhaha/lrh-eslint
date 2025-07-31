@@ -1,15 +1,16 @@
 import * as espree from "espree";
 import estraverse from "estraverse";
-import type {
-  Node as ESTreeNode,
-  Identifier,
-  VariableDeclarator,
-  VariableDeclaration,
-} from "estree";
+import type { Node as ESTreeNode } from "estree";
 import listenersMap from "./rules";
 import fs from "node:fs";
 import type { NodeMap } from "estree";
 type NodeType = keyof NodeMap;
+
+export function run(path: string) {
+  const text = getCode(path)!;
+  const ast = getAST(text);
+  traverseAST(ast as ESTreeNode);
+}
 
 function getCode(path: string) {
   // 读取文本文件
@@ -39,20 +40,13 @@ function traverseAST(ast: ESTreeNode) {
       if (node.type === "Program") {
         const leaveFns = listenersMap.get("report" as NodeType);
         leaveFns?.forEach((fn) => {
-          const report = fn()
+          const report = fn();
 
-          report.forEach(({ start, message}: any) => {
-            console.log(`Position: ${start} - ${message}`)
-          })
-
+          report.forEach(({ start, message }: any) => {
+            console.log(`Position: ${start} - ${message}`);
+          });
         });
       }
     },
   });
-}
-
-export function run(path: string) {
-  const text = getCode(path)!;
-  const ast = getAST(text);
-  traverseAST(ast as ESTreeNode);
 }

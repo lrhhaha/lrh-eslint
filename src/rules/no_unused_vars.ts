@@ -27,7 +27,7 @@ export default {
 
     return {
       // 返回报告
-      report: function (){
+      report: function () {
         const report: {
           start: number;
           message: string;

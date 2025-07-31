@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "no_unused_vars": {
+      "state": "on"
+    }
+  }
+}
