@@ -41,7 +41,7 @@ function initRules() {
 }
 
 function getConfig(): Rules {
-  const filePath = nodePath.join(process.cwd(), ".mini-lintrc.json");
+  const filePath = nodePath.join(process.cwd(), ".lrh-lintrc.json");
 
   try {
     if (fs.existsSync(filePath)) {

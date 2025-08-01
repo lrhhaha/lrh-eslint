@@ -5,7 +5,7 @@ const path = require("path");
 import { run } from "./linter";
 
 program
-  .name("mini-eslint")
+  .name("lrh-eslint")
   .option("--global", "是否扫描当前目录")
   .argument("[path]", "文件路径");
 

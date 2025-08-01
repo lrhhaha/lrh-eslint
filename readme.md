@@ -53,7 +53,7 @@ npm link
 
 撤销安装
 ```bash
-npm unlink -g min-eslint
+npm unlink -g mini-eslint
 ```
 
 ## chalk
