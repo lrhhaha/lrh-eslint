@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "node ./esbuild-dev-config.mjs",
-    "build": "node ./esbuild-build-config.mjs"
+    "build": "node ./esbuild-build-config.mjs",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +19,7 @@
     "@types/espree": "^10.1.0",
     "@types/estraverse": "^5.1.7",
     "@types/node": "^24.1.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "esbuild": "^0.25.8",
     "vitest": "^3.2.4"
   },

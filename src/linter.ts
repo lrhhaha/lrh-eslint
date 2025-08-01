@@ -20,14 +20,14 @@ export function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
   process.exit(errorFlag ? 1 : 0);
 }
 
-function worker(path: string) {
+export function worker(path: string) {
   // console.log(path);
   const text = getCode(path)!;
   const ast = getAST(text);
   traverseAST(ast as ESTreeNode, path);
 }
 
-function getCode(path: string) {
+export function getCode(path: string) {
   // 读取文本文件
   try {
     const data = fs.readFileSync(path, "utf8");
@@ -37,7 +37,7 @@ function getCode(path: string) {
   }
 }
 
-function getAST(code: string) {
+export function getAST(code: string) {
   const ast = espree.parse(code, {
     ecmaVersion: 2022,
     tokens: true,
@@ -47,7 +47,7 @@ function getAST(code: string) {
   return ast;
 }
 
-function traverseAST(ast: ESTreeNode, filePath: string) {
+export function traverseAST(ast: ESTreeNode, filePath: string) {
   estraverse.traverse(ast as ESTreeNode, {
     enter: function (node, parent) {
       if (listenersMap.has('all' as any)) {
@@ -81,7 +81,7 @@ function traverseAST(ast: ESTreeNode, filePath: string) {
   });
 }
 
-function getAllJsFile(dirPath: string) {
+export function getAllJsFile(dirPath: string) {
   try {
     const files = fs.readdirSync(dirPath);
     const allFiles: string[] = [];
