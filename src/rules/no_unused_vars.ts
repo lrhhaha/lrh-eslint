@@ -63,7 +63,7 @@ export default {
                 return;
               } else {
                 if (declared.has(node.name)) {
-                  console.log("删除1");
+                  // console.log("删除1");
                   declared.delete(node.name);
                 }
               }
@@ -73,7 +73,7 @@ export default {
               if (parent.computed) {
                 // obj[a] 形式
                 if (declared.has(node.name)) {
-                  console.log("删除2");
+                  // console.log("删除2");
                   declared.delete(node.name);
                 }
               } else {
@@ -86,7 +86,7 @@ export default {
               return;
             } else {
               if (declared.has(node.name)) {
-                console.log("删除3");
+                // console.log("删除3");
                 declared.delete(node.name);
               }
             }

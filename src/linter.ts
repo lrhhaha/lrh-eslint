@@ -49,6 +49,12 @@ function getAST(code: string) {
 function traverseAST(ast: ESTreeNode) {
   estraverse.traverse(ast as ESTreeNode, {
     enter: function (node, parent) {
+      if (listenersMap.has('all' as any)) {
+        const fns = listenersMap.get('all' as any)
+        // console.log('>>', fns);
+        fns?.forEach((fn) => fn(node, parent));
+      }
+
       if (listenersMap.has(node.type as NodeType)) {
         const funs = listenersMap.get(node.type as NodeType);
         funs?.forEach((fn) => fn(node, parent));

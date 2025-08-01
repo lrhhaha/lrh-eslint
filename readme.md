@@ -44,7 +44,8 @@ npx lrh-eslint --global
 
 在工作目录下添加 `.lrh-lintrc.json` 配置文件，对规则进行配置。
 
-现支持规则的开/关，使用state配置项，配置'on'或'off'。
+现支持规则的开/关，使用 state 配置项，配置'on'或'off'。
+
 ```json
 {
   "rules": {
@@ -84,7 +85,6 @@ export default {
     return {
       // 返回报告
       report: function () {
-        // const reports: Report[] = [];
         return reports;
       },
       // CallExpression监听器
