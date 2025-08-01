@@ -16,7 +16,8 @@
     "@types/espree": "^10.1.0",
     "@types/estraverse": "^5.1.7",
     "@types/node": "^24.1.0",
-    "esbuild": "^0.25.8"
+    "esbuild": "^0.25.8",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "chalk": "^5.4.1",
