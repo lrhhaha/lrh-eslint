@@ -62,7 +62,7 @@ function handleByRules(mergeRules: Rules) {
   ruleNames.forEach((name) => {
     const rule = mergeRules[name];
 
-    const { state, testRule } = rule;
+    const { state } = rule;
 
     // 校验state规则
     if (state === "on") {
@@ -93,7 +93,6 @@ function generateDefaultRules() {
   allRules.map((ruleName) => {
     defaultRules[ruleName] = {
       state: "on",
-      testRule: "default",
     };
   });
   // console.log(defaultRules);

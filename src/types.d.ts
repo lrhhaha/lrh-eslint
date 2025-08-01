@@ -3,7 +3,6 @@ import type { NodeMap, Node as ESTreeNode, } from "estree";
 export type Rules = {
   [key: string]: {
     state: "on" | "off";
-    testRule: 'default' | 'hello'
   };
 };
 

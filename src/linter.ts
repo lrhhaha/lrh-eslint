@@ -12,7 +12,7 @@ let errorFlag = false;
 export function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
   if (path) {
     worker(path);
-  } else if(isGlobal) {
+  } else if (isGlobal) {
     const files = getAllJsFile(process.cwd());
     files.forEach((filePath) => worker(filePath));
   }
@@ -37,7 +37,11 @@ function getCode(path: string) {
 }
 
 function getAST(code: string) {
-  const ast = espree.parse(code, { ecmaVersion: 2022, tokens: true, loc: true });
+  const ast = espree.parse(code, {
+    ecmaVersion: 2022,
+    tokens: true,
+    loc: true,
+  });
   // console.dir(ast, { depth: null });
   return ast;
 }
@@ -83,9 +87,12 @@ function getAllJsFile(dirPath: string) {
         // console.log(filePath, '???');
         if (filePath.endsWith(".js")) allFiles.push(filePath);
       } else if (stat.isDirectory()) {
-        // 递归读取子目录
-        const subFiles = getAllJsFile(filePath);
-        allFiles.push(...subFiles);
+        // 排除node_modules目录
+        if (file !== "node_modules") {
+          // 递归读取子目录
+          const subFiles = getAllJsFile(filePath);
+          allFiles.push(...subFiles);
+        }
       }
     });
 

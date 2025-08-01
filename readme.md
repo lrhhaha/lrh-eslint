@@ -2,24 +2,57 @@
 
 一个简易的 Javascript 编码格式检查工具。
 
-# 安装
+# 安装及使用
+
+## 全局安装
 
 ```bash
 npm install -g lrh-eslint
 ```
 
-# 使用
-
-## 指定检查目标
+### 指定检查目标
 
 ```bash
 lrh-eslint <path>
 ```
 
-## 自动扫描并检测当前工作目录
+### 自动扫描并检测当前工作目录
 
 ```bash
 lrh-eslint --global
+```
+
+## 安装至项目
+
+```bash
+npm install -D lrh-eslint
+```
+
+### 指定检查目标
+
+```bash
+npx lrh-eslint <path>
+```
+
+### 自动扫描并检测当前工作目录
+
+```bash
+npx lrh-eslint --global
+```
+
+# 自定义配置
+
+在工作目录下添加 `.lrh-lintrc.json` 配置文件，对规则进行配置。
+
+现支持规则的开/关，使用state配置项，配置'on'或'off'。
+```json
+{
+  "rules": {
+    "no_unused_vars": {
+      "state": "on"
+    }
+  }
+}
 ```
 
 # 添加自定义规则

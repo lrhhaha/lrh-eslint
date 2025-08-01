@@ -1,6 +1,6 @@
 {
   "name": "lrh-eslint",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "lrh-eslint",
   "main": "index.js",
   "bin": {
@@ -23,5 +23,10 @@
     "commander": "^14.0.0",
     "espree": "^10.4.0",
     "estraverse": "^5.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lrhhaha/lrh-eslint"
+  },
+  "homepage": "https://github.com/lrhhaha/lrh-eslint/blob/main/readme.md"
 }
