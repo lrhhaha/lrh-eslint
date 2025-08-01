@@ -18,9 +18,9 @@ export default {
       // 所有节点
       all: function (node: ESTreeNode, parent: ESTreeNode | null) {
         const { body, type } = node as any;
-        if (body === undefined) return;
-
         if (type === "Program") tokens = (node as any).tokens;
+
+        if (body === undefined || !Array.isArray(body)) return;
 
         body.forEach((node: ESTreeNode) => {
           const { end } = node as any;

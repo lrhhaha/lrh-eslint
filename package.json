@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node ./esbuild-dev-config.mjs",
-    "build": "node ./esbuild-config.mjs"
+    "build": "node ./esbuild-build-config.mjs"
   },
   "author": "",
   "license": "ISC",

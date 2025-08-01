@@ -21,9 +21,10 @@ export function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
 }
 
 function worker(path: string) {
+  // console.log(path);
   const text = getCode(path)!;
   const ast = getAST(text);
-  traverseAST(ast as ESTreeNode);
+  traverseAST(ast as ESTreeNode, path);
 }
 
 function getCode(path: string) {
@@ -46,7 +47,7 @@ function getAST(code: string) {
   return ast;
 }
 
-function traverseAST(ast: ESTreeNode) {
+function traverseAST(ast: ESTreeNode, filePath: string) {
   estraverse.traverse(ast as ESTreeNode, {
     enter: function (node, parent) {
       if (listenersMap.has('all' as any)) {
@@ -72,7 +73,7 @@ function traverseAST(ast: ESTreeNode) {
             // const { start } = node.loc
             // const { line, column } = start
             // console.log(chalk.red(`Position: line:${line} - column:${column} - ${message}`));
-            console.log(chalk.red(`${message}`));
+            console.log(chalk.red(`${filePath} - ${message}`));
           });
         });
       }
