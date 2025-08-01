@@ -13,7 +13,7 @@ export type Config = {
 
 export type Report = {
   // start: number;
-  node: ESTreeNode;
+  // node: ESTreeNode;
   message: string;
 }
 

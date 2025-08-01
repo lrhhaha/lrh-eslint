@@ -3,11 +3,11 @@
 // console.log(a);
 
 // ===================
-let a = 'b';
-let obj = {
-  b: 2
-}
-console.log(obj.b)
+// let a = 'b';
+// let obj = {
+//   b: 2
+// }
+// console.log(obj.b)
 
 // ======================
 // let a = 'b';
@@ -24,3 +24,6 @@ console.log(obj.b)
 // if (1) {
 //   console.log(obj[a]);
 // }
+
+let a = 1
+setInterval(() => 1)

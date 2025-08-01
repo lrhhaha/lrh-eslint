@@ -34,8 +34,8 @@ export default {
             const { type, value } = token
             if (type !== 'Punctuator' || value !== ';') {
               reports.push({
-                node,
-                message: `Position: line:${token.loc.start.line} - column:${token.loc.end.column} - semi`
+                // node,
+                message: `line:${token.loc.start.line} - column:${token.loc.end.column} => semi`
               })
             } 
           } else {

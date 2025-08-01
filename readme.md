@@ -1,65 +1,94 @@
-# 依赖库
+# 简介
 
-## eslint
-https://zh-hans.eslint.org/
+一个简易的 Javascript 编码格式检查工具。
 
-## esbuild
-- 项目打包
-- 提供开发环境实时打包功能
-[官方文档]()
-## espree
+# 安装
 
-将 js 代码片段解析为符合 ESTree 规范的 AST。
-
-[官方文档](https://github.com/eslint/js/blob/main/packages/espree/README.md)
-
-### ESTree
-
-`ESTree 是一个JavaScript 抽象语法树（Abstract Syntax Tree）的标准规范`
-
-ESTree 定义了各种节点类型，比如：
-
-- Program - 程序根节点
-- VariableDeclaration - 变量声明
-- FunctionDeclaration - 函数声明
-- ExpressionStatement - 表达式语句
-- Identifier - 标识符
-- Literal - 字面量
-
-[ESTree 的 type 说明](https://rain120.github.io/study-notes/fe/babel/ast/estree-spec/)
-
-## estraverse
-`用于遍历符合ESTree规范的AST`
-
-[官方文档](https://www.npmjs.com/package/estraverse)
-
-## commander
-
-命令行解决方案
-
-[官方文档](https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md)
-
-将工具注册为全局命令
-```package.json
-"bin": {
-  "min-eslint": "./src/cli.js"
-},
-```
-
-安装为全局命令
 ```bash
-npm link
+npm install -g lrh-eslint
 ```
 
-撤销安装
+# 使用
+
+## 指定检查目标
+
 ```bash
-npm unlink -g mini-eslint
+lrh-eslint <path>
 ```
 
-## chalk
-命令行样式
-[官方文档](https://github.com/chalk/chalk#readme)
+## 自动扫描并检测当前工作目录
 
+```bash
+lrh-eslint --global
+```
 
-# 参考
-https://github.com/OBKoro1/web_accumulate/issues/258
+# 添加自定义规则
+
+例：添加`不允许使用setInterval函数`的规则。
+
+## step1： 创建规则文件
+
+在 `src/rules` 目录中创建 `no_setInterval.ts` 文件。
+
+程序会使用 [espree](https://github.com/eslint/js/tree/main/packages/espree) 库，将对应代码转换为符合 ESTree 规范的 AST，并使用 [estraverse](https://github.com/estools/estraverse) 进行遍历。
+
+遍历过程中，会调用 [节点类型](https://github.com/estree/estree) 对应的钩子函数，如下文中的 CallExpression 钩子函数。
+
+在 AST 遍历结束时，会调用 report 钩子函数，函数需将错误列表返回，无检查出错误则返回空数组。
+
+```typescript
+import type { Node as ESTreeNode } from "estree";
+import type { Report } from "../types";
+
+export default {
+  meta: {
+    docs: "no_setInterval",
+  },
+
+  create(ctx: any) {
+    const reports: Report[] = [];
+
+    return {
+      // 返回报告
+      report: function () {
+        // const reports: Report[] = [];
+        return reports;
+      },
+      // CallExpression监听器
+      CallExpression: function (node: ESTreeNode, parent: ESTreeNode | null) {
+        const { callee, loc } = node as any;
+        if (callee.type === "Identifier" && callee.name === "setInterval") {
+          reports.push({
+            message: `line:${loc.start.line} - column:${loc.start.column} => no_setInterval`,
+          });
+        }
+      },
+    };
+  },
+};
+```
+
+## step2: 注册规则
+
+在 `src/rules/index.ts` 文件中将编写好的 `no_setInterval.ts` 文件引入并注册
+
+```typescript
+import no_setInterval from "./no_setInterval";
+
+const ruleCreators: { [k: string]: any } = {
+  // some rules....
+
+  // 注册
+  no_setInterval,
+};
+
+// some code...
+```
+
+## step3： 构建
+
+在项目根目录下，执行以下命令构建代码
+
+```bash
+npm run build
+```

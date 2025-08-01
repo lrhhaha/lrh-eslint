@@ -57,10 +57,10 @@ function traverseAST(ast: ESTreeNode) {
           errorFlag = true;
           const report = fn();
 
-          report.forEach(({ node, message }: any) => {
+          report.forEach(({ message }: any) => {
             // console.log(node)
-            const { start } = node.loc
-            const { line, column } = start
+            // const { start } = node.loc
+            // const { line, column } = start
             // console.log(chalk.red(`Position: line:${line} - column:${column} - ${message}`));
             console.log(chalk.red(`${message}`));
           });

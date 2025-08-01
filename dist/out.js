@@ -16847,8 +16847,8 @@ var no_unused_vars_default = {
           const { line, column } = start;
           reports.push({
             // start: (node as any).start,
-            node,
-            message: `Position: line:${line} - column:${column} - unused var: ${varName}`
+            // node,
+            message: `line:${line} - column:${column} => unused var: ${varName}`
           });
         });
         return reports;
@@ -16918,8 +16918,8 @@ var semi_default = {
             const { type, value } = token;
             if (type !== "Punctuator" || value !== ";") {
               reports.push({
-                node: node2,
-                message: `Position: line:${token.loc.start.line} - column:${token.loc.end.column} - semi`
+                // node,
+                message: `line:${token.loc.start.line} - column:${token.loc.end.column} => semi`
               });
             }
           } else {
@@ -16953,7 +16953,7 @@ function initRules() {
   handleByRules(rules);
 }
 function getConfig() {
-  const filePath = import_node_path.default.join(process.cwd(), ".mini-lintrc.json");
+  const filePath = import_node_path.default.join(process.cwd(), ".lrh-lintrc.json");
   try {
     if (import_node_fs.default.existsSync(filePath)) {
       const text = import_node_fs.default.readFileSync(filePath, "utf8");
@@ -17535,9 +17535,7 @@ function traverseAST(ast) {
         leaveFns?.forEach((fn) => {
           errorFlag = true;
           const report = fn();
-          report.forEach(({ node: node2, message }) => {
-            const { start } = node2.loc;
-            const { line, column } = start;
+          report.forEach(({ message }) => {
             console.log(source_default.red(`${message}`));
           });
         });
@@ -17569,7 +17567,7 @@ function getAllJsFile(dirPath) {
 // src/cli.ts
 var { program } = require_commander();
 var path = require("path");
-program.name("mini-eslint").option("--global", "\u662F\u5426\u626B\u63CF\u5F53\u524D\u76EE\u5F55").argument("[path]", "\u6587\u4EF6\u8DEF\u5F84");
+program.name("lrh-eslint").option("--global", "\u662F\u5426\u626B\u63CF\u5F53\u524D\u76EE\u5F55").argument("[path]", "\u6587\u4EF6\u8DEF\u5F84");
 program.parse();
 var options = program.opts();
 var isGlobal = options.global === true;

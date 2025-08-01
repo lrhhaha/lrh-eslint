@@ -30,8 +30,8 @@ export default {
           const { line, column } = start
           reports.push({
             // start: (node as any).start,
-            node,
-            message: `Position: line:${line} - column:${column} - unused var: ${varName}`,
+            // node,
+            message: `line:${line} - column:${column} => unused var: ${varName}`,
           });
         });
         return reports;
