@@ -1,6 +1,6 @@
 import no_unused_vars from "./no_unused_vars";
 import semi from "./semi";
-import type { Rules, NodeType } from "../types";
+import type { Rules, NodeType, ListenersMap } from "../types";
 import fs from "node:fs";
 import nodePath from "node:path";
 
@@ -10,12 +10,10 @@ const ruleCreators: { [k: string]: any } = {
   semi
 };
 
-const listenersMap: Map<NodeType, [Function]> = new Map();
+// 根据传入配置初始化listenersMap
+export default function initListenersMap() {
+  const listenersMap: ListenersMap = new Map();
 
-initRules();
-
-// 根据传入配置初始化rules
-function initRules() {
   // 获取配置文件配置
   const configRules = getConfig();
 
@@ -37,7 +35,9 @@ function initRules() {
   // console.log("融合a", rules);
 
   // 根据规则生成listen集合
-  handleByRules(rules);
+  handleByRules(rules, listenersMap);
+
+  return listenersMap
 }
 
 function getConfig(): Rules {
@@ -55,7 +55,7 @@ function getConfig(): Rules {
   }
 }
 
-function handleByRules(mergeRules: Rules) {
+function handleByRules(mergeRules: Rules, listenersMap: ListenersMap) {
   const ruleNames = Object.keys(mergeRules);
   const listenerList: { NodeType: Function }[] = [];
 
@@ -98,5 +98,3 @@ function generateDefaultRules() {
   // console.log(defaultRules);
   return defaultRules;
 }
-
-export default listenersMap;

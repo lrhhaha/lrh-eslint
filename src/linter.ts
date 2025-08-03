@@ -1,11 +1,12 @@
 import * as espree from "espree";
 import estraverse from "estraverse";
 import type { Node as ESTreeNode } from "estree";
-import listenersMap from "./rules";
+// import listenersMap from "./rules";
+import initListenersMap from "./rules";
 import fs from "node:fs";
 import nodePath from "node:path";
 import chalk from "chalk";
-import type { NodeType } from "./types";
+import type { NodeType, ListenersMap } from "./types";
 
 let errorFlag = false;
 
@@ -24,7 +25,10 @@ export function worker(path: string) {
   // console.log(path);
   const text = getCode(path)!;
   const ast = getAST(text);
-  traverseAST(ast as ESTreeNode, path);
+
+  const listenersMap = initListenersMap()
+
+  traverseAST(listenersMap, ast as ESTreeNode, path);
 }
 
 export function getCode(path: string) {
@@ -47,7 +51,7 @@ export function getAST(code: string) {
   return ast;
 }
 
-export function traverseAST(ast: ESTreeNode, filePath: string) {
+export function traverseAST(listenersMap:  ListenersMap,ast: ESTreeNode, filePath: string) {
   estraverse.traverse(ast as ESTreeNode, {
     enter: function (node, parent) {
       if (listenersMap.has('all' as any)) {

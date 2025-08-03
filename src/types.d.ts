@@ -17,3 +17,5 @@ export type Report = {
 }
 
 export type NodeType = keyof NodeMap;
+
+export type ListenersMap = Map<NodeType, [Function]>;

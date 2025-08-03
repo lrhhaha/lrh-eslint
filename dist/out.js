@@ -153,9 +153,8 @@ var ruleCreators = {
   no_unused_vars: no_unused_vars_default,
   semi: semi_default
 };
-var listenersMap = /* @__PURE__ */ new Map();
-initRules();
-function initRules() {
+function initListenersMap() {
+  const listenersMap = /* @__PURE__ */ new Map();
   const configRules = getConfig();
   const ruleNames = configRules ? Object.keys(configRules) : [];
   const rules = generateDefaultRules();
@@ -165,7 +164,8 @@ function initRules() {
       ...configRules[ruleName]
     };
   });
-  handleByRules(rules);
+  handleByRules(rules, listenersMap);
+  return listenersMap;
 }
 function getConfig() {
   const filePath = import_node_path.default.join(process.cwd(), ".lrh-lintrc.json");
@@ -180,7 +180,7 @@ function getConfig() {
     return {};
   }
 }
-function handleByRules(mergeRules) {
+function handleByRules(mergeRules, listenersMap) {
   const ruleNames = Object.keys(mergeRules);
   const listenerList = [];
   ruleNames.forEach((name) => {
@@ -212,7 +212,6 @@ function generateDefaultRules() {
   });
   return defaultRules;
 }
-var rules_default = listenersMap;
 
 // src/linter.ts
 var import_node_fs2 = __toESM(require("node:fs"));
@@ -231,7 +230,8 @@ function run({ path: path2, isGlobal: isGlobal2 }) {
 function worker(path2) {
   const text = getCode(path2);
   const ast = getAST(text);
-  traverseAST(ast, path2);
+  const listenersMap = initListenersMap();
+  traverseAST(listenersMap, ast, path2);
 }
 function getCode(path2) {
   try {
@@ -249,21 +249,21 @@ function getAST(code) {
   });
   return ast;
 }
-function traverseAST(ast, filePath) {
+function traverseAST(listenersMap, ast, filePath) {
   import_estraverse.default.traverse(ast, {
     enter: function(node, parent) {
-      if (rules_default.has("all")) {
-        const fns = rules_default.get("all");
+      if (listenersMap.has("all")) {
+        const fns = listenersMap.get("all");
         fns?.forEach((fn) => fn(node, parent));
       }
-      if (rules_default.has(node.type)) {
-        const funs = rules_default.get(node.type);
+      if (listenersMap.has(node.type)) {
+        const funs = listenersMap.get(node.type);
         funs?.forEach((fn) => fn(node, parent));
       }
     },
     leave: function(node) {
       if (node.type === "Program") {
-        const leaveFns = rules_default.get("report");
+        const leaveFns = listenersMap.get("report");
         leaveFns?.forEach((fn) => {
           errorFlag = true;
           const report = fn();
