@@ -10,21 +10,32 @@ describe('rules/index', () => {
   });
 
   describe('模块导出', () => {
-    it('应该导出一个 Map 实例', async () => {
+    it('应该导出一个函数', async () => {
       // 重置模块以确保干净的导入
       vi.resetModules();
       
       const module = await import('../../rules/index');
-      const listenersMap = module.default;
+      const initListenersMap = module.default;
+      
+      expect(typeof initListenersMap).toBe('function');
+    });
+
+    it('应该返回一个 Map 实例', async () => {
+      vi.resetModules();
+      
+      const module = await import('../../rules/index');
+      const initListenersMap = module.default;
+      const listenersMap = initListenersMap();
       
       expect(listenersMap).toBeInstanceOf(Map);
     });
 
-    it('应该包含规则监听器', async () => {
+    it('返回的 Map 应该包含规则监听器', async () => {
       vi.resetModules();
       
       const module = await import('../../rules/index');
-      const listenersMap = module.default;
+      const initListenersMap = module.default;
+      const listenersMap = initListenersMap();
       
       // 验证 Map 不为空（说明规则被初始化了）
       expect(listenersMap.size).toBeGreaterThan(0);
@@ -37,7 +48,9 @@ describe('rules/index', () => {
       
       // 这个测试验证模块能够正常导入而不抛出错误
       expect(async () => {
-        await import('../../rules/index');
+        const module = await import('../../rules/index');
+        const initListenersMap = module.default;
+        initListenersMap();
       }).not.toThrow();
     });
 
@@ -45,7 +58,8 @@ describe('rules/index', () => {
       vi.resetModules();
       
       const module = await import('../../rules/index');
-      const listenersMap = module.default;
+      const initListenersMap = module.default;
+      const listenersMap = initListenersMap();
       
       // 验证监听器映射包含预期的节点类型
       const keys = Array.from(listenersMap.keys());
@@ -61,6 +75,21 @@ describe('rules/index', () => {
           });
         }
       });
+    });
+
+    it('应该每次调用都返回新的 Map 实例', async () => {
+      vi.resetModules();
+      
+      const module = await import('../../rules/index');
+      const initListenersMap = module.default;
+      
+      const listenersMap1 = initListenersMap();
+      const listenersMap2 = initListenersMap();
+      
+      // 验证返回的是不同的实例
+      expect(listenersMap1).not.toBe(listenersMap2);
+      // 但内容应该相同
+      expect(listenersMap1.size).toBe(listenersMap2.size);
     });
   });
 
@@ -98,29 +127,29 @@ describe('rules/index', () => {
       expect(Object.keys(defaultRules)).toHaveLength(2);
     });
 
-         it('应该正确处理规则融合逻辑', () => {
-       // 模拟规则融合
-       const defaultRules: any = {
-         no_unused_vars: { state: 'on' },
-         semi: { state: 'on' }
-       };
-       
-       const configRules: any = {
-         semi: { state: 'off' }
-       };
-       
-       // 融合逻辑
-       const mergedRules = { ...defaultRules };
-       Object.keys(configRules).forEach(ruleName => {
-         mergedRules[ruleName] = {
-           ...mergedRules[ruleName],
-           ...configRules[ruleName]
-         };
-       });
-       
-       expect(mergedRules.no_unused_vars.state).toBe('on');
-       expect(mergedRules.semi.state).toBe('off');
-     });
+    it('应该正确处理规则融合逻辑', () => {
+      // 模拟规则融合
+      const defaultRules: any = {
+        no_unused_vars: { state: 'on' },
+        semi: { state: 'on' }
+      };
+      
+      const configRules: any = {
+        semi: { state: 'off' }
+      };
+      
+      // 融合逻辑
+      const mergedRules = { ...defaultRules };
+      Object.keys(configRules).forEach(ruleName => {
+        mergedRules[ruleName] = {
+          ...mergedRules[ruleName],
+          ...configRules[ruleName]
+        };
+      });
+      
+      expect(mergedRules.no_unused_vars.state).toBe('on');
+      expect(mergedRules.semi.state).toBe('off');
+    });
   });
 
   describe('错误处理', () => {
@@ -145,6 +174,63 @@ describe('rules/index', () => {
       const config = fileExists ? { rules: { test: 'value' } } : defaultConfig;
       
       expect(config).toEqual({});
+    });
+  });
+
+  describe('函数行为验证', () => {
+    it('应该根据配置正确初始化规则', async () => {
+      vi.resetModules();
+      
+      // Mock 文件系统，模拟配置文件存在
+      const mockFs = {
+        existsSync: vi.fn().mockReturnValue(true),
+        readFileSync: vi.fn().mockReturnValue(JSON.stringify({
+          rules: {
+            no_unused_vars: { state: 'on' },
+            semi: { state: 'off' }
+          }
+        }))
+      };
+
+      const mockPath = {
+        join: vi.fn().mockReturnValue('/test/.lrh-lintrc.json')
+      };
+
+      vi.doMock('node:fs', () => mockFs);
+      vi.doMock('node:path', () => ({ default: mockPath }));
+      vi.spyOn(process, 'cwd').mockReturnValue('/test');
+
+      const module = await import('../../rules/index');
+      const initListenersMap = module.default;
+      const listenersMap = initListenersMap();
+
+      expect(listenersMap).toBeInstanceOf(Map);
+      expect(listenersMap.size).toBeGreaterThan(0);
+    });
+
+    it('应该在没有配置文件时使用默认规则', async () => {
+      vi.resetModules();
+      
+      // Mock 文件系统，模拟配置文件不存在
+      const mockFs = {
+        existsSync: vi.fn().mockReturnValue(false),
+        readFileSync: vi.fn()
+      };
+
+      const mockPath = {
+        join: vi.fn().mockReturnValue('/test/.lrh-lintrc.json')
+      };
+
+      vi.doMock('node:fs', () => mockFs);
+      vi.doMock('node:path', () => ({ default: mockPath }));
+      vi.spyOn(process, 'cwd').mockReturnValue('/test');
+
+      const module = await import('../../rules/index');
+      const initListenersMap = module.default;
+      const listenersMap = initListenersMap();
+
+      expect(listenersMap).toBeInstanceOf(Map);
+      expect(listenersMap.size).toBeGreaterThan(0);
     });
   });
 });

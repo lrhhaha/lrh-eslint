@@ -9,6 +9,7 @@ export default {
   create(ctx: any) {
     const reports: Report[] = [];
     let tokens: any = null;
+
     return {
       // 返回报告
       report: function () {
