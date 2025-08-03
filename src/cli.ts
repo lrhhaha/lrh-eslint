@@ -2,7 +2,7 @@
 
 const { program } = require("commander");
 const path = require("path");
-import { run } from "./linter";
+import run from "./linter";
 
 program
   .name("lrh-eslint")
@@ -35,5 +35,5 @@ if (!isGlobal && inputPath === undefined) {
   run({ path: absolutePath });
 } else {
   // 只传了global
-  run({ isGlobal: true})
+  run({ isGlobal: true });
 }

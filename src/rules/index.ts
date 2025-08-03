@@ -7,7 +7,7 @@ import nodePath from "node:path";
 // 所有规则
 const ruleCreators: { [k: string]: any } = {
   no_unused_vars,
-  semi
+  semi,
 };
 
 // 根据传入配置初始化listenersMap
@@ -37,7 +37,7 @@ export default function initListenersMap() {
   // 根据规则生成listen集合
   handleByRules(rules, listenersMap);
 
-  return listenersMap
+  return listenersMap;
 }
 
 function getConfig(): Rules {

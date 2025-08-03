@@ -10,7 +10,7 @@ import type { NodeType, ListenersMap } from "./types";
 
 let errorFlag = false;
 
-export function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
+export default function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
   if (path) {
     worker(path);
   } else if (isGlobal) {
@@ -26,7 +26,7 @@ export function worker(path: string) {
   const text = getCode(path)!;
   const ast = getAST(text);
 
-  const listenersMap = initListenersMap()
+  const listenersMap = initListenersMap();
 
   traverseAST(listenersMap, ast as ESTreeNode, path);
 }
@@ -51,11 +51,15 @@ export function getAST(code: string) {
   return ast;
 }
 
-export function traverseAST(listenersMap:  ListenersMap,ast: ESTreeNode, filePath: string) {
+export function traverseAST(
+  listenersMap: ListenersMap,
+  ast: ESTreeNode,
+  filePath: string
+) {
   estraverse.traverse(ast as ESTreeNode, {
     enter: function (node, parent) {
-      if (listenersMap.has('all' as any)) {
-        const fns = listenersMap.get('all' as any)
+      if (listenersMap.has("all" as any)) {
+        const fns = listenersMap.get("all" as any);
         // console.log('>>', fns);
         fns?.forEach((fn) => fn(node, parent));
       }
