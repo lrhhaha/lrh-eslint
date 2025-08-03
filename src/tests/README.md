@@ -23,11 +23,6 @@ npm test
 npm run test:coverage
 ```
 
-### 运行测试（一次性）
-```bash
-npm run test:run
-```
-
 ## 测试内容
 
 ### CLI 测试 (`cli.test.ts`)
