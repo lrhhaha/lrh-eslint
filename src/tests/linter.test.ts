@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as nodePath from 'node:path';
 import * as espree from 'espree';
 import * as estraverse from 'estraverse';
-import { run, worker, getCode, getAST, getAllJsFile } from '../linter';
+import { run, worker, getCode, getAST, traverseAST } from '../linter';
 
 // Mock 依赖
 vi.mock('node:fs');
@@ -80,42 +80,28 @@ describe('linter', () => {
       });
       expect(result).toBe(mockAST);
     });
-  });
 
-  describe('getAllJsFile', () => {
-    it('应该处理目录读取错误', () => {
-      const mockError = new Error('Permission denied');
-      vi.mocked(fs.readdirSync).mockImplementation(() => {
+    it('应该处理AST解析错误', () => {
+      const mockCode = 'invalid syntax {';
+      const mockError = new Error('Unexpected token');
+      vi.mocked(espree.parse).mockImplementation(() => {
         throw mockError;
       });
 
-      const result = getAllJsFile('/test');
-      
-      expect(console.error).toHaveBeenCalledWith('读取目录时出错:', mockError);
-      expect(result).toEqual([]);
+      expect(() => getAST(mockCode)).toThrow('Unexpected token');
     });
+  });
 
-    it('应该正确识别JS文件', () => {
-      const mockDirPath = '/test';
-      const mockFiles = ['file1.js', 'file2.txt', 'file3.js'];
-      
-      vi.mocked(fs.readdirSync).mockReturnValue(mockFiles as any);
-      vi.mocked(fs.statSync).mockImplementation((path: any) => {
-        const pathStr = path.toString();
-        if (pathStr.endsWith('.js')) {
-          return { isFile: () => true, isDirectory: () => false } as any;
-        } else {
-          return { isFile: () => true, isDirectory: () => false } as any;
-        }
-      });
-      vi.mocked(nodePath.join).mockImplementation((...args) => args.join('/'));
+  describe('traverseAST', () => {
+    it('应该正确调用estraverse.traverse', () => {
+      const mockAST = { type: 'Program', body: [] };
+      const mockFilePath = 'test.js';
 
-      const result = getAllJsFile(mockDirPath);
+      vi.mocked(estraverse.traverse).mockImplementation(() => {});
+
+      traverseAST(mockAST as any, mockFilePath);
       
-      expect(fs.readdirSync).toHaveBeenCalledWith(mockDirPath);
-      expect(result).toContain('/test/file1.js');
-      expect(result).toContain('/test/file3.js');
-      expect(result).not.toContain('/test/file2.txt');
+      expect(estraverse.traverse).toHaveBeenCalledWith(mockAST, expect.any(Object));
     });
   });
 
@@ -151,6 +137,18 @@ describe('linter', () => {
       
       expect(console.error).toHaveBeenCalledWith('读取文件失败:', expect.any(Error));
     });
+
+    it('应该处理AST解析失败的情况', () => {
+      const mockPath = 'test.js';
+      const mockCode = 'invalid syntax {';
+      
+      vi.mocked(fs.readFileSync).mockReturnValue(mockCode);
+      vi.mocked(espree.parse).mockImplementation(() => {
+        throw new Error('Unexpected token');
+      });
+
+      expect(() => worker(mockPath)).toThrow('Unexpected token');
+    });
   });
 
   describe('run', () => {
@@ -169,27 +167,24 @@ describe('linter', () => {
       expect(process.exit).toHaveBeenCalledWith(0);
     });
 
-    it('应该处理全局模式', () => {
-      const mockFiles = ['file1.js', 'file2.js'];
+    it('应该在没有参数时正常退出', () => {
+      run({});
+      
+      expect(process.exit).toHaveBeenCalledWith(0);
+    });
+
+    it('应该处理参数优先级：path优先于isGlobal', () => {
+      const mockPath = 'test.js';
       const mockCode = 'const a = 1;';
       const mockAST = { type: 'Program', body: [] };
       
-      vi.mocked(fs.readdirSync).mockReturnValue(['file1.js', 'file2.js'] as any);
-      vi.mocked(fs.statSync).mockReturnValue({ isFile: () => true, isDirectory: () => false } as any);
-      vi.mocked(nodePath.join).mockImplementation((...args) => args.join('/'));
       vi.mocked(fs.readFileSync).mockReturnValue(mockCode);
       vi.mocked(espree.parse).mockReturnValue(mockAST as any);
       vi.mocked(estraverse.traverse).mockImplementation(() => {});
 
-      run({ isGlobal: true });
+      run({ path: mockPath, isGlobal: true });
       
-      expect(fs.readdirSync).toHaveBeenCalledWith(process.cwd());
-      expect(process.exit).toHaveBeenCalledWith(0);
-    });
-
-    it('应该在没有参数时正常退出', () => {
-      run({});
-      
+      expect(fs.readFileSync).toHaveBeenCalledWith(mockPath, 'utf8');
       expect(process.exit).toHaveBeenCalledWith(0);
     });
   });
