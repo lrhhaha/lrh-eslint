@@ -159,9 +159,15 @@ npm publish
 npm config get registry
 
 // 设置源地址
-npm congif set registry xxxxxxx
+npm config set registry xxxxxxx
 
 // 官方源：https://registry.npmjs.org/
 // 淘宝源：https://registry.npmmirror.com/
 ```
 
+# 遇到的问题
+打包后遇到问题：\
+使用低版本的node无法运行，至少20.19.0版本才能运行。原因是项目依赖了chalk@5，此版本默认使用ESM规范。而项目在打包时，配置了“不对依赖进行打包”（这是一个正确的做法，可减少输出文件的大小），而是在out.js中直接引用外部依赖。问题就出现在`require(ESModule)`上了，旧版本node的reqire不能引入ESM模块，所以会报错，而高版本则支持这个功能。为了让lrh-eslint具有更好的兼容性，决定将chalk降级为4.x，此版本遵循的是CommonJS规范，自然就不会出现低版本node无法运行的问题了。
+
+
+之前整个项目只会对每个规则进行一次初始化，这在检测单文件时没有问题。但在检测global模式时，多个文件会共用一个规则的变量，造成数据污染。后来改成每个文件都要创建一遍规则。
