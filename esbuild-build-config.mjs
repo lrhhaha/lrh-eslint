@@ -5,5 +5,5 @@ await esbuild.build({
   entryPoints: ['src/cli.ts'],
   bundle: true,
   outfile: "dist/out.js",
-  packages: 'external',
+  packages: 'external', // 不要打包外部依赖
 })
