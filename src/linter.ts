@@ -10,6 +10,7 @@ import type { NodeType, ListenersMap } from "./types";
 
 let errorFlag = false;
 
+// 入口函数
 export default function run({ path, isGlobal }: { path?: string; isGlobal?: boolean }) {
   if (path) {
     worker(path);
@@ -21,16 +22,22 @@ export default function run({ path, isGlobal }: { path?: string; isGlobal?: bool
   process.exit(errorFlag ? 1 : 0);
 }
 
+// 单个文件的检查流程
 export function worker(path: string) {
-  // console.log(path);
+  // 读取代码
   const text = getCode(path)!;
+
+  // code -> AST
   const ast = getAST(text);
 
+  // 初始化回调函数
   const listenersMap = initListenersMap();
 
+  // 遍历AST，调用回调函数
   traverseAST(listenersMap, ast as ESTreeNode, path);
 }
 
+// 读取代码
 export function getCode(path: string) {
   // 读取文本文件
   try {
@@ -41,6 +48,7 @@ export function getCode(path: string) {
   }
 }
 
+// code -> AST
 export function getAST(code: string) {
   const ast = espree.parse(code, {
     ecmaVersion: 2022,
@@ -51,6 +59,7 @@ export function getAST(code: string) {
   return ast;
 }
 
+// 遍历AST，调用回调函数
 export function traverseAST(
   listenersMap: ListenersMap,
   ast: ESTreeNode,
@@ -89,6 +98,7 @@ export function traverseAST(
   });
 }
 
+// 全局模式，获取当前工作目录所有JS文件
 export function getAllJsFile(dirPath: string) {
   try {
     const files = fs.readdirSync(dirPath);

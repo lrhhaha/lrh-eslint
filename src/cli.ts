@@ -13,13 +13,10 @@ program.parse();
 
 const options = program.opts();
 
+// 是否是global模式
 const isGlobal = options.global === true;
-
-// console.log(isGlobal);
-
+// 文件路径
 const inputPath = program.args[0];
-
-// console.log(inputPath);
 
 // 两个参数都不传
 if (!isGlobal && inputPath === undefined) {
